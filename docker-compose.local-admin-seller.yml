@@ -1,0 +1,112 @@
+name: telegram-local-admin-seller
+
+x-logging: &local-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "2"
+
+services:
+  db:
+    image: postgres:17-alpine
+    env_file: [.env.local.admin-seller]
+    volumes:
+      - telegram_local_admin_seller_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [local-backend]
+    logging: *local-logging
+
+  migrate:
+    build:
+      context: .
+      target: migrator
+    env_file: [.env.local.admin-seller]
+    depends_on:
+      db: {condition: service_healthy}
+    restart: "no"
+    networks: [local-backend]
+    logging: *local-logging
+
+  app:
+    build:
+      context: .
+      target: runner
+    env_file: [.env.local.admin-seller]
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    ports: ["127.0.0.1:33110:3000"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 6
+    networks: [local-backend]
+    logging: *local-logging
+
+  scheduler:
+    image: curlimages/curl:8.16.0
+    env_file: [.env.local.admin-seller]
+    depends_on:
+      app: {condition: service_healthy}
+    command: ["/bin/sh", "-ec", "while true; do curl --fail --silent --show-error --header \"Authorization: Bearer $${APP_CRON_SECRET}\" http://app:3000/api/cron/notifications/fast || true; sleep 10; done"]
+    networks: [local-backend]
+    logging: *local-logging
+
+  notification-worker:
+    image: curlimages/curl:8.16.0
+    env_file: [.env.local.admin-seller]
+    depends_on:
+      app: {condition: service_healthy}
+    command: ["/bin/sh", "-ec", "while true; do curl --fail --silent --show-error --request POST --header \"Authorization: Bearer $${APP_CRON_SECRET}\" http://app:3000/api/cron/notifications/fast || true; sleep 2; done"]
+    networks: [local-backend]
+    logging: *local-logging
+
+  bot:
+    image: node:24-alpine
+    env_file: [.env.local.admin-seller]
+    environment:
+      LOCAL_WEBHOOK_URL: http://app:3000/api/telegram/webhook
+    volumes:
+      - ./scripts/local-bot-runner.mjs:/opt/local-bot-runner.mjs:ro
+    command: ["node", "/opt/local-bot-runner.mjs"]
+    depends_on:
+      app: {condition: service_healthy}
+    networks: [local-backend]
+    logging: *local-logging
+
+  storefront:
+    build:
+      context: storefront
+      args:
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: LocalAdminSellerTestBot
+    env_file: [.env.local.storefront]
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    depends_on:
+      app: {condition: service_healthy}
+    ports: ["127.0.0.1:34110:3000"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 6
+    networks: [local-backend]
+    logging: *local-logging
+
+volumes:
+  telegram_local_admin_seller_db:
+
+networks:
+  local-backend:
+    name: telegram-local-admin-seller-backend
