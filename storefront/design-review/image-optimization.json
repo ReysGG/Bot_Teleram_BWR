@@ -1,0 +1,23 @@
+[
+  {
+    "asset": "/headings/shop-heading.png",
+    "original_bytes": 1345624,
+    "optimized_bytes": 8228,
+    "format": "image/webp",
+    "reduction_percent": 99.4
+  },
+  {
+    "asset": "/hero-ai-workspace.png",
+    "original_bytes": 1836658,
+    "optimized_bytes": 19138,
+    "format": "image/webp",
+    "reduction_percent": 99.0
+  },
+  {
+    "asset": "/placeholders/product-fallback.webp",
+    "original_bytes": 59422,
+    "optimized_bytes": 3874,
+    "format": "image/webp",
+    "reduction_percent": 93.5
+  }
+]

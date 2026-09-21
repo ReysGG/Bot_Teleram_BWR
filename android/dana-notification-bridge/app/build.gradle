@@ -1,0 +1,49 @@
+apply plugin: "com.android.application"
+
+android {
+    namespace "com.k12stockroom.danabridge"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.k12stockroom.danabridge"
+        minSdk 26
+        targetSdk 36
+        versionCode 20
+        versionName "1.5.7"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable false
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "K12-Stockroom-Bridge.apk"
+        }
+    }
+}
+
+dependencies {
+    testImplementation "junit:junit:4.13.2"
+}

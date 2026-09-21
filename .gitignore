@@ -1,0 +1,44 @@
+node_modules/
+.next/
+out/
+coverage/
+9router/
+
+.env
+.env.*
+!.env.example
+!.env.docker.example
+
+src/generated/prisma/
+
+# Credential inventory must only enter the encrypted admin import flow.
+*.9router.json
+*.9router.*.json
+.windsurf/sample/
+private-stock/
+accountflow-redeem-*.txt
+/test/
+/test.json
+/test.txt
+/filenya/
+
+# Local merchant session exports are credentials, never source or fixtures.
+/shopee
+/private-payment-sessions/
+
+npm-debug.log*
+*.tsbuildinfo
+
+# Local Android build state and install artifacts.
+**/.gradle/
+**/build/
+**/local.properties
+*.apk
+deploy/*.tar
+deploy/*.tar.gz
+deploy/template/*.local.json
+deploy/template/__pycache__/
+deploy/__pycache__/
+
+# Private production database backups.
+/backups/

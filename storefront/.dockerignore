@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.git/
+.env
+.env.*
+!.env.example
+coverage/
+# Browser/visual QA uses Vite and Vitest tooling that is intentionally not a
+# production dependency. It is validated on the workstation before the image
+# build and must not enter the runtime build context.
+qa/
+*.log

@@ -1,0 +1,5 @@
+ALTER TYPE "WalletTransactionType"
+ADD VALUE IF NOT EXISTS 'PREORDER_CANCEL_REFUND';
+
+ALTER TABLE "TelegramNotification"
+ADD COLUMN "messageText" TEXT;

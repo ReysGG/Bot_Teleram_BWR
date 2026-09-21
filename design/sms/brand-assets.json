@@ -1,0 +1,797 @@
+{
+  "simpleIconsVersion": "16.32.0",
+  "totalServices": 1386,
+  "mappedServices": 158,
+  "assets": {
+    "adidas.360ad2feb6.svg": {
+      "brand": "adidas",
+      "source": "https://www.adidas.com",
+      "bytes": 258
+    },
+    "airbnb.730875628a.svg": {
+      "brand": "airbnb",
+      "source": "https://www.airbnb.com",
+      "bytes": 1378
+    },
+    "apple.cbc36e6e70.svg": {
+      "brand": "apple",
+      "source": "https://www.apple.com",
+      "bytes": 665
+    },
+    "backblaze.bce35b0c95.svg": {
+      "brand": "backblaze",
+      "source": "https://www.backblaze.com/company/news.html",
+      "bytes": 1322
+    },
+    "badoo.8de721652e.svg": {
+      "brand": "badoo",
+      "source": "https://badoo.com",
+      "bytes": 527
+    },
+    "baidu.c06b13de3a.svg": {
+      "brand": "baidu",
+      "source": "https://www.baidu.com",
+      "bytes": 1406
+    },
+    "battledotnet.54aa35338f.svg": {
+      "brand": "battledotnet",
+      "source": "https://battle.net",
+      "bytes": 1190
+    },
+    "betfair.dc35c1c8e0.svg": {
+      "brand": "betfair",
+      "source": "https://www.betfair.com",
+      "bytes": 231
+    },
+    "bim.17eed4e39e.svg": {
+      "brand": "bim",
+      "source": "https://commons.wikimedia.org/wiki/File:Bim_(company)_logo.svg",
+      "bytes": 959
+    },
+    "bookingdotcom.9e5e4af371.svg": {
+      "brand": "bookingdotcom",
+      "source": "https://www.bookingholdings.com/media-room",
+      "bytes": 689
+    },
+    "bukalapak.7b52f7d1fd.svg": {
+      "brand": "bukalapak",
+      "source": "https://www.bukalapak.com",
+      "bytes": 676
+    },
+    "burgerking.ac22ecc1c3.svg": {
+      "brand": "burgerking",
+      "source": "https://www.bk.com",
+      "bytes": 4370
+    },
+    "cloudways.ca7a8b2481.svg": {
+      "brand": "cloudways",
+      "source": "https://www.cloudways.com/en/media-kit.php",
+      "bytes": 1387
+    },
+    "clubhouse.dce55c54ed.svg": {
+      "brand": "clubhouse",
+      "source": "https://www.clubhouse.com/press",
+      "bytes": 2513
+    },
+    "deliveroo.66c646a52f.svg": {
+      "brand": "deliveroo",
+      "source": "https://deliveroo.com",
+      "bytes": 607
+    },
+    "dhl.dc80386657.svg": {
+      "brand": "dhl",
+      "source": "https://www.dpdhl-brands.com/dhl/en/guides/design-basics/logo-and-claim.html",
+      "bytes": 916
+    },
+    "discord.79a8105c2f.svg": {
+      "brand": "discord",
+      "source": "https://discord.com/branding",
+      "bytes": 1389
+    },
+    "distrokid.db03d457c1.svg": {
+      "brand": "distrokid",
+      "source": "https://distrokid.com/logo",
+      "bytes": 1512
+    },
+    "doordash.e20dcdb67a.svg": {
+      "brand": "doordash",
+      "source": "https://www.doordash.com/about/",
+      "bytes": 371
+    },
+    "douban.87a0a1b624.svg": {
+      "brand": "douban",
+      "source": "https://www.douban.com/about",
+      "bytes": 325
+    },
+    "ebay.4f7e56c62a.svg": {
+      "brand": "ebay",
+      "source": "https://go.developer.ebay.com/logos",
+      "bytes": 1283
+    },
+    "etsy.1871eb705d.svg": {
+      "brand": "etsy",
+      "source": "https://www.etsy.com/uk/press",
+      "bytes": 725
+    },
+    "facebook.daf5a4fff4.svg": {
+      "brand": "facebook",
+      "source": "https://about.meta.com/brand/resources/facebook/logo",
+      "bytes": 557
+    },
+    "faceit.02c7c82289.svg": {
+      "brand": "faceit",
+      "source": "https://corporate.faceit.com/branding/",
+      "bytes": 279
+    },
+    "fedex.fe9f8efbe1.svg": {
+      "brand": "fedex",
+      "source": "https://newsroom.fedex.com",
+      "bytes": 1624
+    },
+    "firebase.abbf47a2ef.svg": {
+      "brand": "firebase",
+      "source": "https://firebase.google.com/brand-guidelines",
+      "bytes": 1942
+    },
+    "fiverr.339c4f46d3.svg": {
+      "brand": "fiverr",
+      "source": "https://www.fiverr.com/press-kit",
+      "bytes": 907
+    },
+    "freelancer.62ed4454bd.svg": {
+      "brand": "freelancer",
+      "source": "https://www.freelancer.com",
+      "bytes": 355
+    },
+    "g2a.08cf3a6d65.svg": {
+      "brand": "g2a",
+      "source": "https://www.g2a.co/documents/",
+      "bytes": 995
+    },
+    "g2g.16511d0769.svg": {
+      "brand": "g2g",
+      "source": "https://hydron.holdings/media/media_kit",
+      "bytes": 225
+    },
+    "glovo.518505ebc8.svg": {
+      "brand": "glovo",
+      "source": "https://about.glovoapp.com/press",
+      "bytes": 640
+    },
+    "godaddy.796a2af71b.svg": {
+      "brand": "godaddy",
+      "source": "https://aboutus.godaddy.net/newsroom/media-resources/",
+      "bytes": 1164
+    },
+    "gojek.aa3d2f1b60.svg": {
+      "brand": "gojek",
+      "source": "https://gojek.com",
+      "bytes": 719
+    },
+    "google.3730780f82.png": {
+      "brand": "google",
+      "source": "https://www.gstatic.com/images/branding/product/2x/googleg_48dp.png",
+      "bytes": 2392
+    },
+    "groupme.62aeface44.svg": {
+      "brand": "groupme",
+      "source": "https://groupme.com",
+      "bytes": 1297
+    },
+    "huawei.c5b0b049b2.svg": {
+      "brand": "huawei",
+      "source": "https://e.huawei.com/ph/material/partner/0a72728b864949c48b22106454352483",
+      "bytes": 1338
+    },
+    "humblebundle.b380f31ae2.svg": {
+      "brand": "humblebundle",
+      "source": "https://support.humblebundle.com/hc/en-us/articles/202742060-Bundle-Logos",
+      "bytes": 605
+    },
+    "icq.0660f5aacf.svg": {
+      "brand": "icq",
+      "source": "https://commons.wikimedia.org/wiki/File:ICQNewlogo.svg",
+      "bytes": 994
+    },
+    "imgur.6daf8ba06b.svg": {
+      "brand": "imgur",
+      "source": "https://imgurinc.com/press",
+      "bytes": 4154
+    },
+    "indeed.0dfe89f394.svg": {
+      "brand": "indeed",
+      "source": "https://indeed.design/resources",
+      "bytes": 889
+    },
+    "inspire.992e236e68.svg": {
+      "brand": "inspire",
+      "source": "https://inspirehep.net",
+      "bytes": 467
+    },
+    "instacart.2e731af892.svg": {
+      "brand": "instacart",
+      "source": "https://www.instacart.com/press",
+      "bytes": 594
+    },
+    "instagram.1060526807.svg": {
+      "brand": "instagram",
+      "source": "https://about.meta.com/brand/resources/instagram",
+      "bytes": 2116
+    },
+    "ionos.7dbc95adf5.svg": {
+      "brand": "ionos",
+      "source": "https://www.ionos.de",
+      "bytes": 1814
+    },
+    "kaggle.21649ce1fb.svg": {
+      "brand": "kaggle",
+      "source": "https://www.kaggle.com/brand-guidelines",
+      "bytes": 3580
+    },
+    "kakaotalk.9acf03f7c5.svg": {
+      "brand": "kakaotalk",
+      "source": "https://commons.wikimedia.org/wiki/File:KakaoTalk_logo.svg",
+      "bytes": 1787
+    },
+    "keybase.728b28597f.svg": {
+      "brand": "keybase",
+      "source": "https://github.com/keybase/client/tree/a144e0ce38ee9e495cc5acbcd4ef859f5534d820/media/logos",
+      "bytes": 2680
+    },
+    "klook.37a9848fd5.svg": {
+      "brand": "klook",
+      "source": "https://www.klook.com/en-GB/newsroom/",
+      "bytes": 616
+    },
+    "line.b33b86ee7c.svg": {
+      "brand": "line",
+      "source": "https://line.me/en/logo",
+      "bytes": 1191
+    },
+    "lyft.5c700a0a84.svg": {
+      "brand": "lyft",
+      "source": "https://www.lyft.com/press",
+      "bytes": 935
+    },
+    "mailchimp.b32937f1d6.svg": {
+      "brand": "mailchimp",
+      "source": "https://mailchimp.com/about/brand-assets",
+      "bytes": 4193
+    },
+    "maildotcom.90945c83ee.svg": {
+      "brand": "maildotcom",
+      "source": "https://www.mail.com",
+      "bytes": 548
+    },
+    "mailgun.e5896975bd.svg": {
+      "brand": "mailgun",
+      "source": "https://mailgun.com",
+      "bytes": 795
+    },
+    "maildotru.bb64ff73d3.svg": {
+      "brand": "maildotru",
+      "source": "https://my.mail.ru",
+      "bytes": 828
+    },
+    "meetup.5cf0d25da2.svg": {
+      "brand": "meetup",
+      "source": "https://www.meetup.com/media/",
+      "bytes": 2481
+    },
+    "mewe.f581a5a17f.svg": {
+      "brand": "mewe",
+      "source": "https://mewe.com",
+      "bytes": 1778
+    },
+    "myspace.48277cdd55.svg": {
+      "brand": "myspace",
+      "source": "https://myspace.com",
+      "bytes": 897
+    },
+    "naver.4a10bf40e7.svg": {
+      "brand": "naver",
+      "source": "https://developers.naver.com/docs/login/bi/bi.md",
+      "bytes": 194
+    },
+    "near.99d86985ec.svg": {
+      "brand": "near",
+      "source": "https://near.org/brand",
+      "bytes": 559
+    },
+    "netflix.76b63a30ad.svg": {
+      "brand": "netflix",
+      "source": "https://brand.netflix.com/en/assets/logos",
+      "bytes": 291
+    },
+    "nextdoor.8f6358856d.svg": {
+      "brand": "nextdoor",
+      "source": "https://about.nextdoor.com/us-media/",
+      "bytes": 2586
+    },
+    "nike.bafb08923d.svg": {
+      "brand": "nike",
+      "source": "https://www.nike.com",
+      "bytes": 412
+    },
+    "nvidia.db04aa8771.svg": {
+      "brand": "nvidia",
+      "source": "https://www.nvidia.com/en-us",
+      "bytes": 896
+    },
+    "okcupid.b54124b82b.svg": {
+      "brand": "okcupid",
+      "source": "https://okcupid.com/press",
+      "bytes": 2044
+    },
+    "openai.2b4a04ddc2.svg": {
+      "brand": "openai",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/openai.svg",
+      "bytes": 1570
+    },
+    "oyo.099ec8f2ba.svg": {
+      "brand": "oyo",
+      "source": "https://www.oyorooms.com",
+      "bytes": 716
+    },
+    "paddypower.c66637737b.svg": {
+      "brand": "paddypower",
+      "source": "https://www.paddypower.com",
+      "bytes": 1381
+    },
+    "pinterest.3ddfb8bdb6.svg": {
+      "brand": "pinterest",
+      "source": "https://business.pinterest.com/en/brand-guidelines",
+      "bytes": 924
+    },
+    "protonmail.4647152827.svg": {
+      "brand": "protonmail",
+      "source": "https://proton.me/media/kit",
+      "bytes": 523
+    },
+    "ram.5d9bf460bf.svg": {
+      "brand": "ram",
+      "source": "https://www.fcaci.com/x/RAMv15",
+      "bytes": 4594
+    },
+    "razer.a5a3e77368.svg": {
+      "brand": "razer",
+      "source": "https://press.razer.com",
+      "bytes": 7215
+    },
+    "roblox.b1b43fa369.svg": {
+      "brand": "roblox",
+      "source": "https://www.roblox.com",
+      "bytes": 219
+    },
+    "root.8ec3a5ab63.svg": {
+      "brand": "root",
+      "source": "https://root.cern/assets/images/logos/svg/ROOT.svg",
+      "bytes": 876
+    },
+    "rumble.97661444b7.svg": {
+      "brand": "rumble",
+      "source": "https://rumble.com",
+      "bytes": 631
+    },
+    "samsclub.85a55e7c07.svg": {
+      "brand": "samsclub",
+      "source": "https://www.samsclub.com",
+      "bytes": 450
+    },
+    "scaleway.763e7b6483.svg": {
+      "brand": "scaleway",
+      "source": "https://ultraviolet.scaleway.com",
+      "bytes": 738
+    },
+    "shopee.b77d4cf6f8.svg": {
+      "brand": "shopee",
+      "source": "https://shopee.com",
+      "bytes": 1222
+    },
+    "shopify.73b7faee1a.svg": {
+      "brand": "shopify",
+      "source": "https://www.shopify.com/brand-assets",
+      "bytes": 1249
+    },
+    "signal.72bf5e1052.svg": {
+      "brand": "signal",
+      "source": "https://signal.org/brand",
+      "bytes": 1660
+    },
+    "simplex.c999b40b19.svg": {
+      "brand": "simplex",
+      "source": "https://github.com/simplex-chat/simplex-chat/blob/2f730d54e9858452e87e641b7fd618c669da68aa/website/src/img/new/logo-symbol-light.svg",
+      "bytes": 502
+    },
+    "snapchat.f129382631.svg": {
+      "brand": "snapchat",
+      "source": "https://www.snapchat.com/brand-guidelines",
+      "bytes": 1493
+    },
+    "spotify.366bb7f808.svg": {
+      "brand": "spotify",
+      "source": "https://developer.spotify.com/documentation/general/design-and-branding/#using-our-logo",
+      "bytes": 712
+    },
+    "starbucks.e8a397a07e.svg": {
+      "brand": "starbucks",
+      "source": "https://starbucks.com",
+      "bytes": 7723
+    },
+    "steam.5a0fc3a968.svg": {
+      "brand": "steam",
+      "source": "https://partner.steamgames.com/doc/marketing/branding",
+      "bytes": 1051
+    },
+    "steemit.39140950ad.svg": {
+      "brand": "steemit",
+      "source": "https://steemit.com",
+      "bytes": 758
+    },
+    "taobao.c5febb2248.svg": {
+      "brand": "taobao",
+      "source": "https://www.alibabagroup.com/en/ir/reports",
+      "bytes": 4399
+    },
+    "target.511fdc9365.svg": {
+      "brand": "target",
+      "source": "https://www.target.com",
+      "bytes": 472
+    },
+    "telegram.4435c9a57e.svg": {
+      "brand": "telegram",
+      "source": "https://telegram.org/tour/screenshots",
+      "bytes": 757
+    },
+    "thumbtack.a95e675e99.svg": {
+      "brand": "thumbtack",
+      "source": "https://www.thumbtack.com/press/media-resources/",
+      "bytes": 388
+    },
+    "ticketmaster.62b9f1e4b2.svg": {
+      "brand": "ticketmaster",
+      "source": "https://design.ticketmaster.com/brand/overview/",
+      "bytes": 4452
+    },
+    "tiktok.474e542d15.svg": {
+      "brand": "tiktok",
+      "source": "https://tiktok.com",
+      "bytes": 722
+    },
+    "tinder.f2df5edf0a.svg": {
+      "brand": "tinder",
+      "source": "https://www.gotinder.com/press",
+      "bytes": 573
+    },
+    "tradingview.e7089a0ec0.svg": {
+      "brand": "tradingview",
+      "source": "https://www.tradingview.com/media-kit",
+      "bytes": 361
+    },
+    "tripadvisor.c45f380331.svg": {
+      "brand": "tripadvisor",
+      "source": "https://tripadvisor.mediaroom.com/logo-guidelines",
+      "bytes": 781
+    },
+    "twitch.9d0d871053.svg": {
+      "brand": "twitch",
+      "source": "https://brand.twitch.tv",
+      "bytes": 307
+    },
+    "x.07099f0e2e.svg": {
+      "brand": "x",
+      "source": "https://x.com",
+      "bytes": 314
+    },
+    "uber.29eaa0ec30.svg": {
+      "brand": "uber",
+      "source": "https://assets.uber.com/d/k4nuxdZ8MC7E/logos/collection/151",
+      "bytes": 948
+    },
+    "ubisoft.6839282062.svg": {
+      "brand": "ubisoft",
+      "source": "https://www.ubisoft.com/en-US/company/overview.aspx",
+      "bytes": 1037
+    },
+    "upwork.f33903e292.svg": {
+      "brand": "upwork",
+      "source": "https://www.upwork.com/press/",
+      "bytes": 684
+    },
+    "usps.a38dc7d740.svg": {
+      "brand": "usps",
+      "source": "https://www.usps.com",
+      "bytes": 1285
+    },
+    "viber.57c8712868.svg": {
+      "brand": "viber",
+      "source": "https://www.viber.com/brand-center",
+      "bytes": 2328
+    },
+    "vinted.d92c4eb7da.svg": {
+      "brand": "vinted",
+      "source": "https://www.vinted.com",
+      "bytes": 590
+    },
+    "vk.84a5b49cf1.svg": {
+      "brand": "vk",
+      "source": "https://vk.com/brand",
+      "bytes": 1293
+    },
+    "wechat.439de170df.svg": {
+      "brand": "wechat",
+      "source": "https://wechat.design/tool/brand",
+      "bytes": 1345
+    },
+    "whatsapp.3e197e0e1f.svg": {
+      "brand": "whatsapp",
+      "source": "https://about.meta.com/brand/resources/whatsapp/whatsapp-brand",
+      "bytes": 1231
+    },
+    "wish.22ea3c573e.svg": {
+      "brand": "wish",
+      "source": "https://wish.com",
+      "bytes": 373
+    },
+    "woocommerce.256d6b2788.svg": {
+      "brand": "woocommerce",
+      "source": "https://woocommerce.com/style-guide",
+      "bytes": 3589
+    },
+    "yelp.b3e4398664.svg": {
+      "brand": "yelp",
+      "source": "https://www.yelp.com/brand",
+      "bytes": 4858
+    },
+    "zalo.ce55da4db6.svg": {
+      "brand": "zalo",
+      "source": "https://zalo.me",
+      "bytes": 1083
+    },
+    "zhihu.99322d6c81.svg": {
+      "brand": "zhihu",
+      "source": "https://www.zhihu.com",
+      "bytes": 933
+    },
+    "zoho.c0a69263b8.svg": {
+      "brand": "zoho",
+      "source": "https://www.zoho.com/branding",
+      "bytes": 2651
+    },
+    "zomato.248e80ee69.svg": {
+      "brand": "zomato",
+      "source": "https://www.zomato.com/business/apps",
+      "bytes": 2267
+    },
+    "googleplay.b9144b1db5.svg": {
+      "brand": "googleplay",
+      "source": "https://partnermarketinghub.withgoogle.com/brands/google-play/visual-identity/primary-logos/",
+      "bytes": 454
+    },
+    "kik.c5ec71661c.svg": {
+      "brand": "kik",
+      "source": "https://www.kik.com/news/",
+      "bytes": 1319
+    },
+    "blibli.5e5ca15f07.svg": {
+      "brand": "blibli",
+      "source": "https://www.blibli.com",
+      "bytes": 1340
+    },
+    "grab.02d15d8fef.svg": {
+      "brand": "grab",
+      "source": "https://en.wikipedia.org/wiki/File:Grab_(application)_logo.svg",
+      "bytes": 2844
+    },
+    "youtube.7f5156448b.svg": {
+      "brand": "youtube",
+      "source": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors",
+      "bytes": 474
+    },
+    "foodpanda.c7b6a50d56.svg": {
+      "brand": "foodpanda",
+      "source": "https://www.foodpanda.com",
+      "bytes": 1623
+    },
+    "riotgames.19821d3d70.svg": {
+      "brand": "riotgames",
+      "source": "https://www.riotgames.com/en/press",
+      "bytes": 350
+    },
+    "cocacola.3a73dc1848.svg": {
+      "brand": "cocacola",
+      "source": "https://commons.wikimedia.org/wiki/File:Coca-Cola_logo.svg",
+      "bytes": 4911
+    },
+    "onlyfans.da943c3e20.svg": {
+      "brand": "onlyfans",
+      "source": "https://onlyfans.com/brand",
+      "bytes": 570
+    },
+    "porkbun.ee4344727a.svg": {
+      "brand": "porkbun",
+      "source": "https://porkbun.design",
+      "bytes": 1435
+    },
+    "poe.5e50e10d6e.svg": {
+      "brand": "poe",
+      "source": "https://poe.com",
+      "bytes": 2367
+    },
+    "aliexpress.cbe0d1e225.svg": {
+      "brand": "aliexpress",
+      "source": "https://www.alibabagroup.com/en/ir/reports",
+      "bytes": 2393
+    },
+    "spectrum.2479f48efd.svg": {
+      "brand": "spectrum",
+      "source": "https://spectrum.chat",
+      "bytes": 281
+    },
+    "kleinanzeigen.794590aecb.svg": {
+      "brand": "kleinanzeigen",
+      "source": "https://www.kleinanzeigen.de",
+      "bytes": 921
+    },
+    "swiggy.e471a43ceb.svg": {
+      "brand": "swiggy",
+      "source": "https://www.swiggy.com",
+      "bytes": 767
+    },
+    "asda.892da0a0bb.svg": {
+      "brand": "asda",
+      "source": "https://www.asda.com",
+      "bytes": 1035
+    },
+    "gitlab.3bbfcd2707.svg": {
+      "brand": "gitlab",
+      "source": "https://about.gitlab.com/press/press-kit/",
+      "bytes": 588
+    },
+    "lidl.41bd332b82.svg": {
+      "brand": "lidl",
+      "source": "https://www.lidl.de",
+      "bytes": 925
+    },
+    "brevo.e4a2425ae0.svg": {
+      "brand": "brevo",
+      "source": "https://www.brevo.com",
+      "bytes": 620
+    },
+    "zara.7a2db869f3.svg": {
+      "brand": "zara",
+      "source": "https://www.zara.com",
+      "bytes": 1202
+    },
+    "red.8c3e04e05f.svg": {
+      "brand": "red",
+      "source": "https://www.red-lang.org",
+      "bytes": 314
+    },
+    "bilibili.b765d3899f.svg": {
+      "brand": "bilibili",
+      "source": "https://www.bilibili.com",
+      "bytes": 1396
+    },
+    "gmx.e90c939f03.svg": {
+      "brand": "gmx",
+      "source": "https://www.united-internet.de/en/newsroom/media-center/logos.html",
+      "bytes": 688
+    },
+    "vercel.075b9d221e.svg": {
+      "brand": "vercel",
+      "source": "https://vercel.com/geist/brands",
+      "bytes": 147
+    },
+    "reddit.cc158155e9.svg": {
+      "brand": "reddit",
+      "source": "https://www.redditinc.com/brand",
+      "bytes": 1248
+    },
+    "tesco.523e4d5d37.svg": {
+      "brand": "tesco",
+      "source": "https://www.tesco.com",
+      "bytes": 2483
+    },
+    "unitedairlines.88bc967734.svg": {
+      "brand": "unitedairlines",
+      "source": "https://www.united.com",
+      "bytes": 4379
+    },
+    "cursor.68c88e317a.svg": {
+      "brand": "cursor",
+      "source": "https://cursor.com/brand",
+      "bytes": 469
+    },
+    "redbubble.ad3942a5ce.svg": {
+      "brand": "redbubble",
+      "source": "https://www.redbubble.com",
+      "bytes": 576
+    },
+    "suno.e6e22de907.svg": {
+      "brand": "suno",
+      "source": "https://suno.com",
+      "bytes": 231
+    },
+    "backbone.216fc69622.svg": {
+      "brand": "backbone",
+      "source": "https://backbone.com/press",
+      "bytes": 1069
+    },
+    "civo.9015ad9622.svg": {
+      "brand": "civo",
+      "source": "https://www.civo.com/brand-assets",
+      "bytes": 1180
+    },
+    "mistralai.5d6abe5c18.svg": {
+      "brand": "mistralai",
+      "source": "https://chat.mistral.ai",
+      "bytes": 305
+    },
+    "autodesk.78dca91e8d.svg": {
+      "brand": "autodesk",
+      "source": "https://brand.autodesk.com/brand-system/logo",
+      "bytes": 318
+    },
+    "aparat.204f342e55.svg": {
+      "brand": "aparat",
+      "source": "https://www.aparat.com/logo",
+      "bytes": 1414
+    },
+    "boots.85bb1fc9de.svg": {
+      "brand": "boots",
+      "source": "https://www.boots-uk.com",
+      "bytes": 3535
+    },
+    "mlb.2aed96bf88.svg": {
+      "brand": "mlb",
+      "source": "https://www.mlb.com",
+      "bytes": 1163
+    },
+    "stockx.29085a0150.svg": {
+      "brand": "stockx",
+      "source": "https://stockx.com/about/brand-assets",
+      "bytes": 202
+    },
+    "nextbike.f7f3cb8bd8.svg": {
+      "brand": "nextbike",
+      "source": "https://www.nextbike.net/en/press",
+      "bytes": 949
+    },
+    "boehringeringelheim.9f6155f4f2.svg": {
+      "brand": "boehringeringelheim",
+      "source": "https://www.boehringer-ingelheim.com",
+      "bytes": 803
+    },
+    "activision.1d82d30444.svg": {
+      "brand": "activision",
+      "source": "https://www.activision.com",
+      "bytes": 1137
+    },
+    "ifood.c43e07ae34.svg": {
+      "brand": "ifood",
+      "source": "https://ifood.com.br",
+      "bytes": 605
+    },
+    "perplexity.407ad12547.svg": {
+      "brand": "perplexity",
+      "source": "https://www.perplexity.ai",
+      "bytes": 633
+    },
+    "basicattentiontoken.b1fd25b6e6.svg": {
+      "brand": "basicattentiontoken",
+      "source": "https://brave.com/media-assets",
+      "bytes": 882
+    },
+    "epicgames.f551b6fcb6.svg": {
+      "brand": "epicgames",
+      "source": "https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html#epicgamesbrandguidelines",
+      "bytes": 2827
+    },
+    "gumtree.62ad2f727f.svg": {
+      "brand": "gumtree",
+      "source": "https://www.gumtree.com",
+      "bytes": 926
+    }
+  }
+}

@@ -1,0 +1,233 @@
+name: telegram-store
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "25m"
+    max-file: "3"
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - effective_cache_size=192MB
+      - -c
+      - maintenance_work_mem=32MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - max_connections=30
+    volumes:
+      - telegram_store_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 320m
+    logging: *default-logging
+    networks:
+      - backend
+
+  migrate:
+    image: telegram-migrate:production
+    pull_policy: never
+    env_file:
+      - .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    mem_limit: 256m
+    logging: *default-logging
+    networks:
+      - backend
+
+  app:
+    image: telegram-app:production
+    pull_policy: never
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    expose:
+      - "3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    mem_limit: 384m
+    logging: *default-logging
+    networks:
+      - edge
+      - backend
+
+  scheduler:
+    image: curlimages/curl:8.16.0
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    depends_on:
+      app:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/notifications || true
+          sleep 10
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/stock/health || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/binance-internal || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/binance-web || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/binance-web/match || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/usdt-bep20 || true
+          sleep 10
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/shopee || true
+          sleep 15
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/shopee/match || true
+          sleep 5
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/orders/expire || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --request POST \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/reengagement || true
+          sleep 1800
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/monitoring || true
+          sleep 60
+        done
+    mem_limit: 32m
+    logging: *default-logging
+    networks:
+      # Worker traffic must use the private network. The shared edge network
+      # also contains the separate storefront service with the alias `app`,
+      # which can route cron calls to the wrong container after a recreate.
+      - backend
+
+  notification-worker:
+    image: curlimages/curl:8.16.0
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    depends_on:
+      app:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --request POST \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/notifications/fast || true
+          sleep 1
+        done
+    mem_limit: 48m
+    logging: *default-logging
+    networks:
+      - backend
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 128m
+    logging: *default-logging
+    networks:
+      - edge
+
+volumes:
+  telegram_store_postgres:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+  backend:
+    internal: true

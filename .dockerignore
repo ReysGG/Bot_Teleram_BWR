@@ -1,0 +1,37 @@
+node_modules/
+.next/
+.git/
+.env
+.env.*
+*.9router.json
+*.9router.*.json
+.windsurf/sample/
+private-stock/
+accountflow-redeem-*.txt
+/test/
+/test.json
+/test.txt
+/filenya/
+# Merchant session credentials must never enter a Docker build context.
+/shopee
+# The root TypeScript test suite imports this small, side-effect-free
+# storefront cart fixture. Keep the separate storefront application excluded
+# while allowing the three files required by the production type-check.
+/storefront/*
+!/storefront/src/
+/storefront/src/*
+!/storefront/src/lib/
+/storefront/src/lib/*
+!/storefront/src/lib/load-account-cart.ts
+!/storefront/src/lib/cart-api-types.ts
+!/storefront/src/lib/catalog-types.ts
+!/storefront/src/lib/clerk-token-transport.ts
+/private-payment-sessions/
+coverage/
+9router/
+*.log
+deploy/*.tar
+deploy/*.tar.gz
+PROJECT_CONTEXT.md
+DANA_BRIDGE_TELEGRAM_BLUEPRINT.md
+AGENTS.md

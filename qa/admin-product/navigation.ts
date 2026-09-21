@@ -1,0 +1,1 @@
+export function useRouter(){return {push:()=>{window.location.href="/saved"},refresh:()=>{}}}

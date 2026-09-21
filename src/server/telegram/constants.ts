@@ -1,0 +1,7 @@
+export const CATALOG_PAGE_SIZE = 5;
+export const PRODUCT_VARIANT_PAGE_SIZE = 5;
+export const SMS_SERVICE_PAGE_SIZE = 8;
+export const SMS_COUNTRY_PAGE_SIZE = 10;
+export const SMS_HISTORY_PAGE_SIZE = 8;
+export const TELEGRAM_ADMIN_ID = "7398144015";
+export const SMSPOOL_INDONESIA_COUNTRY_ID = 9;

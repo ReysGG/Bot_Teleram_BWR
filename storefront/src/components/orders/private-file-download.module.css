@@ -1,0 +1,10 @@
+.root { min-width: 0; max-width: 100%; }
+.root[data-file-ready="true"] { flex-basis: 100%; width: 100%; }
+.notice { font-size: .84rem; line-height: 1.55; margin: .65rem 0; color: var(--muted, #64708a); }
+.prepared { margin-top: .8rem; padding: .85rem; border: 1px solid #dce6f7; border-radius: 14px; background: #f7faff; overflow-wrap: anywhere; }
+.prepared strong { display: block; font-size: .86rem; margin-bottom: .7rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.actions > * { flex: 1 1 150px; text-align: center; }
+.preview { margin-top: .8rem; font-size: .85rem; }
+.preview summary { cursor: pointer; font-weight: 700; color: #1769ff; padding: .5rem 0; }
+.preview textarea { display: block; box-sizing: border-box; width: 100%; min-height: 180px; resize: vertical; font: 16px/1.5 monospace; background: white; color: #0a1736; border: 1px solid #dce6f7; border-radius: 8px; padding: .7rem; }

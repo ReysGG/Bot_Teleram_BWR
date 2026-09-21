@@ -1,0 +1,8 @@
+{
+  "paths": {
+    "home": "/",
+    "sign_in": "/sign-in",
+    "sign_up": "/sign-up",
+    "after_sign_out_all": "/"
+  }
+}

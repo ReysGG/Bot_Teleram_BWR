@@ -1,0 +1,14 @@
+.card { background:#f6f9ff; border:1px solid #dbe7ff; border-radius:17px; padding:24px; min-width:0; }
+.heading { display:flex; align-items:flex-start; gap:13px; }
+.heading h2 { font-size:1.1rem; margin:0 0 7px; }
+.heading p { font-size:.8rem; color:var(--muted); margin:0; line-height:1.6; }
+.icon { width:42px; height:42px; flex-shrink:0; display:grid; place-items:center; border-radius:12px; color:var(--blue); background:#e6efff; }
+.action { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:20px; }
+.action > span { font-size:.78rem; font-weight:650; color:#267752; }
+.help { margin-top:18px; border-top:1px solid #dbe7ff; padding-top:15px; font-size:.77rem; }
+.help summary { cursor:pointer; color:var(--navy); min-height:28px; }
+.help p { line-height:1.7; color:var(--muted); margin:8px 0 0; }
+.warning,.notice { margin:16px 0 0; font-size:.78rem; line-height:1.6; }
+.notice { background:white; padding:12px; border-radius:10px; }
+.warning a { color:var(--blue); }
+@media(max-width:760px) { .card { padding:18px; } .action { align-items:stretch; flex-direction:column; gap:12px; } }

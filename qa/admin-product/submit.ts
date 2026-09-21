@@ -1,0 +1,1 @@
+export async function submitAdminForm(){return {ok:true,redirectTo:"/saved"}}

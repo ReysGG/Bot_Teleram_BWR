@@ -1,0 +1,149 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "25m"
+    max-file: "3"
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    volumes:
+      - telegram_store_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    logging: *default-logging
+
+  migrate:
+    build:
+      context: .
+      target: migrator
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    logging: *default-logging
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
+    logging: *default-logging
+
+  scheduler:
+    image: curlimages/curl:8.16.0
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    depends_on:
+      app:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/notifications || true
+          sleep 10
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/binance-internal || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/binance-web || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/binance-web/match || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/stock/health || true
+          sleep 30
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/usdt-bep20 || true
+          sleep 10
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/shopee || true
+          sleep 15
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/payments/shopee/match || true
+          sleep 5
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --request POST \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/reengagement || true
+          sleep 1800
+        done &
+        while true; do
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/orders/expire || true
+          sleep 30
+        done
+    logging: *default-logging
+
+  notification-worker:
+    image: curlimages/curl:8.16.0
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    depends_on:
+      app:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        while true; do
+          curl --fail --silent --show-error \
+            --output /dev/null \
+            --request POST \
+            --header "Authorization: Bearer $${APP_CRON_SECRET}" \
+            http://app:3000/api/cron/notifications/fast || true
+          sleep 1
+        done
+    logging: *default-logging
+
+volumes:
+  telegram_store_postgres:

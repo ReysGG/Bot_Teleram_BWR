@@ -1,0 +1,59 @@
+name: telegram-storefront
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  app:
+    image: telegram-storefront:production
+    pull_policy: never
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    expose:
+      - "3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    mem_limit: 256m
+    logging: *default-logging
+    networks:
+      - edge
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      STOREFRONT_DOMAIN: ${STOREFRONT_DOMAIN:-shop.example.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - storefront_caddy_data:/data
+      - storefront_caddy_config:/config
+    mem_limit: 128m
+    logging: *default-logging
+    networks:
+      - edge
+
+volumes:
+  storefront_caddy_data:
+  storefront_caddy_config:
+
+networks:
+  edge:

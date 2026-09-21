@@ -1,0 +1,21 @@
+70-153-137-10.sslip.io {
+  encode zstd gzip
+  reverse_proxy app:3000
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    -Server
+  }
+
+  log {
+    output stdout
+    format filter {
+      request>headers>X-Telegram-Bot-Api-Secret-Token delete
+      request>headers>X-Relay-Signature delete
+      request>headers>X-Bridge-Signature delete
+      request>headers>X-Storefront-Signature delete
+      request>headers>Authorization delete
+      wrap console
+    }
+  }
+}
