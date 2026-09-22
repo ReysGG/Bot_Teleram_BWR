@@ -17,7 +17,8 @@ export function successChannelSmsOrderId(dedupeKey: string) {
 }
 
 export function telegramStoreBotUrl() {
-  const username = optionalEnv("TELEGRAM_BOT_USERNAME")?.replace(/^@/, "") || "K12JsonStockBot";
+  const username = optionalEnv("TELEGRAM_BOT_USERNAME")?.replace(/^@/, "").trim() || (process.env.APP_ENV === "production" ? null : "BWRTeleLocalTestBot");
+  if (!username) throw new Error("TELEGRAM_BOT_USERNAME is required for Telegram links");
   return `https://t.me/${username}`;
 }
 

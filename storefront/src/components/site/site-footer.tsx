@@ -3,9 +3,9 @@ import { Icon } from "@/components/ui/icon";
 import styles from "./site-footer.module.css";
 
 export function SiteFooter() {
-  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.replace(/^@/, "") || "K12JsonStockBot";
+  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.replace(/^@/, "").trim() || null;
   const groupUrl = process.env.STOREFRONT_TELEGRAM_GROUP_URL || "https://t.me/+apR5dsE0r4M4OGJl";
-  const botUrl = `https://t.me/${botUsername}`;
+  const botUrl = botUsername ? `https://t.me/${botUsername}` : null;
   const external = { target: "_blank", rel: "noopener noreferrer" };
   return (
     <footer className={styles.footer}>
@@ -27,7 +27,7 @@ export function SiteFooter() {
             <h2>Temui kami</h2>
             <a href="https://t.me/davidboysaja" {...external}>Telegram admin</a>
             <a href={groupUrl} {...external}>Grup Telegram</a>
-            <a href={botUrl} {...external}>Telegram bot</a>
+            {botUrl ? <a href={botUrl} {...external}>Telegram bot</a> : null}
             <a href="https://www.threads.com/@buildwithreys_ai" {...external}>Threads</a>
           </nav>
           <section className={styles.community} aria-labelledby="footer-community-heading">
@@ -38,7 +38,7 @@ export function SiteFooter() {
             <div className={styles.socials} aria-label="Media sosial BWR Tele">
               <a href="https://t.me/davidboysaja" {...external} aria-label="Chat admin Telegram" title="Telegram admin"><Icon name="user" size={20} aria-hidden="true" /></a>
               <a href={groupUrl} {...external} aria-label="Grup Telegram" title="Grup Telegram"><Icon name="send" size={20} aria-hidden="true" /></a>
-              <a href={botUrl} {...external} aria-label="Bot Telegram" title="Telegram bot"><Icon name="store" size={20} aria-hidden="true" /></a>
+              {botUrl ? <a href={botUrl} {...external} aria-label="Bot Telegram" title="Telegram bot"><Icon name="store" size={20} aria-hidden="true" /></a> : null}
               <a href="https://www.threads.com/@buildwithreys_ai" {...external} aria-label="Threads @buildwithreys_ai" title="Threads @buildwithreys_ai"><span className={styles.threads} aria-hidden="true">@</span></a>
               <span className={styles.handle}>@buildwithreys_ai</span>
             </div>
