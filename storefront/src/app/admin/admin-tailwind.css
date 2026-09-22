@@ -1,0 +1,21 @@
+@layer components {
+  .admin-layout { @apply min-h-screen grid grid-cols-[232px_minmax(0,1fr)] bg-[var(--paper)]; }
+  .admin-sidebar { @apply sticky top-0 z-10 h-screen overflow-auto border-r border-[var(--line)] bg-white p-[22px_12px]; }
+  .sidebar-brand { @apply flex items-center gap-[10px] border-b border-[var(--line)] px-[10px] pb-6 pt-2 text-[var(--navy)]; }
+  .sidebar-mark { @apply grid h-[38px] w-[38px] rotate-[-5deg] place-items-center rounded-[12px_7px_12px_7px] bg-[var(--blue)] font-black text-white; }
+  .sidebar-nav { @apply grid gap-1 pt-[18px]; }
+  .sidebar-link { @apply flex min-h-[42px] items-center justify-between rounded-[10px] px-[11px] text-[.82rem] font-bold text-[var(--navy-soft)] no-underline; }
+  .sidebar-link:hover,.sidebar-link.is-active { @apply bg-[var(--sky)] text-[var(--blue)]; }
+  .admin-content { @apply min-w-0 px-[max(24px,calc((100vw-1360px)/2))] pb-16; }
+  .admin-content .panel { @apply rounded-[18px] border border-[var(--line)] bg-white p-[22px] shadow-[var(--shadow)]; }
+  .admin-content .table-wrap { @apply overflow-auto rounded-[14px] border border-[var(--line)] bg-white; }
+  .admin-management-bar { @apply min-h-[70px] border-b border-[var(--line)] px-1; }
+}
+@media (max-width: 900px) {
+  .admin-layout { @apply block; }
+  .admin-sidebar { @apply sticky h-auto border-b border-r-0 border-[var(--line)] p-3; }
+  .sidebar-brand { @apply pb-2; }
+  .sidebar-nav { @apply flex overflow-auto pt-2; }
+  .sidebar-link { @apply flex-none; }
+  .admin-content { @apply px-4 pb-12; }
+}
