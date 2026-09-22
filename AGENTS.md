@@ -9,6 +9,14 @@
   or poller. Empty test credentials must fail closed; never fall back to production.
 - No production deployment is authorized for the current local admin/seller work.
 
+## Storefront theme and workspace boundary — explicit user instruction, 2026-09-22
+
+- Storefront UI work must use `C:\Users\David Boy\Documents\NextJS\telegram\storefront`.
+- Reuse the existing storefront theme, CSS tokens, layout, components, and local
+  assets. Do not invent a separate visual theme for admin or seller pages.
+- New admin/seller pages must be composed inside the storefront design system;
+  Chrome ChatGPT review is design input only and implementation stays in this path.
+
 ## Required Reading
 
 Before changing code in this workspace, read these files completely:
