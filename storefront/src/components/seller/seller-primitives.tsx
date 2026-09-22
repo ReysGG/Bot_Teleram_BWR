@@ -1,0 +1,6 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+export function SellerPageHeading({ eyebrow, title, description, action }: { eyebrow: string; title: string; description: string; action?: ReactNode }) { return <header className="seller-heading"><div><p className="seller-eyebrow">{eyebrow}</p><h1>{title}</h1><p>{description}</p></div>{action}</header>; }
+export function SellerPanel({ eyebrow, title, children, action }: { eyebrow?: string; title: string; children: ReactNode; action?: ReactNode }) { return <section className="seller-panel"><div className="seller-panel-heading"><div>{eyebrow?<p className="seller-eyebrow">{eyebrow}</p>:null}<h2>{title}</h2></div>{action}</div>{children}</section>; }
+export function SellerStatGrid({ items }: { items: Array<{ label: string; value: string; href?: string }> }) { return <section className="seller-metrics seller-metrics-four">{items.map(item=>item.href?<Link key={item.label} href={item.href}><small>{item.label}</small><strong>{item.value}</strong></Link>:<div key={item.label}><small>{item.label}</small><strong>{item.value}</strong></div>)}</section>; }
+export function SellerEmpty({ title, description, action }: { title: string; description: string; action?: ReactNode }) { return <div className="seller-empty"><strong>{title}</strong><p>{description}</p>{action}</div>; }
