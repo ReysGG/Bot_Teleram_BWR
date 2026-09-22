@@ -7,6 +7,7 @@ import { FloatingQuickLinks } from "@/components/site/floating-quick-links";
 import { LoginFeedback } from "@/components/auth/login-feedback";
 import "../globals.css";
 import { LocalPreviewProvider } from "@/components/auth/local-preview-context";
+import { isLocalPreview } from "@/lib/runtime-env";
 
 // Deployment flags must be evaluated at runtime, not baked into the Docker build.
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const hasClerk = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  const hasClerk = !isLocalPreview() && Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
   const shopContent = <>
     {process.env.STOREFRONT_PREVIEW_READ_ONLY === "true" ? (
       <aside className="preview-banner" aria-label="Status website">
