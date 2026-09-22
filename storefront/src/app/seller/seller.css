@@ -18,7 +18,7 @@
   .seller-grid article a:hover,.seller-button:hover { @apply bg-[var(--blue-deep)]; }
   .seller-panel-heading { @apply mb-6 flex items-center justify-between gap-5; }
   .seller-panel h1 { @apply text-[clamp(2rem,4vw,3.7rem)]; }
-  .seller-empty { @apply rounded-[15px] border border-dashed border-[#b8cff3] bg-[var(--sky)] p-[52px_20px] text-center; }
+  .seller-empty { @apply grid justify-items-center gap-2 rounded-[15px] border border-dashed border-[#b8cff3] bg-[var(--sky)] p-[52px_20px] text-center; }
   .seller-empty strong { @apply text-[var(--navy)]; }
   .seller-empty p,.seller-muted { @apply leading-relaxed text-[var(--muted)]; }
   .seller-notice { @apply mt-6 border-[#cbdcf5] bg-[var(--sky)]; }
@@ -52,6 +52,10 @@
   .seller-withdrawal-form input:focus,.seller-withdrawal-form select:focus { @apply border-[var(--blue)] ring-2 ring-[#dce9ff]; }
   .seller-success { @apply rounded-[10px] border border-[#bce8d2] bg-[var(--mint)] p-3 text-[.8rem] text-[var(--green)]; }
   .seller-back-link { @apply mb-3 inline-flex items-center text-[.8rem] font-extrabold text-[var(--blue)] no-underline; }
+  .seller-illustration { @apply relative grid place-items-center overflow-hidden rounded-[20px] border border-white/70 bg-white/70 p-3; }
+  .seller-illustration img { @apply h-auto max-w-full object-contain; }
+  .seller-illustration-compact { @apply mb-2 h-[92px] w-[132px] rounded-[16px] border-[#cfe0fb] bg-white; }
+  .seller-illustration-compact img { @apply max-h-[76px] w-auto; }
   .seller-stock-page .seller-panel-heading { @apply items-start; }
   .seller-upload-card { @apply mt-6 rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-5; }
   .seller-upload-card .stock-upload-form { @apply grid gap-4; }
@@ -62,6 +66,8 @@
   .seller-login-art::after { content:""; @apply absolute -right-20 -top-20 h-64 w-64 rounded-full border-[30px] border-white/15; }
   .seller-login-mark { @apply relative z-[1] grid h-16 w-16 place-items-center rounded-[20px] bg-white text-4xl font-black text-[var(--blue)] shadow-[0_16px_40px_rgba(7,31,77,.25)]; }
   .seller-login-art > div { @apply relative z-[1] grid max-w-[440px] gap-3; }
+  .seller-login-art > .seller-illustration { @apply relative z-[1] h-[220px] w-[min(100%,380px)] self-end border-white/20 bg-white/10 backdrop-blur-sm; }
+  .seller-login-art > .seller-illustration img { @apply h-full w-full object-contain mix-blend-screen; }
   .seller-login-art .seller-eyebrow { @apply text-[#cfe0fb]; }
   .seller-login-art strong { @apply text-4xl leading-tight tracking-[-.04em]; }
   .seller-login-art small { @apply text-base leading-relaxed text-[#e7f0ff]; }

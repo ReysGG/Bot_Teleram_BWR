@@ -29,3 +29,17 @@ Source review conversation: [ChatGPT seller/admin UI review](https://chatgpt.com
 The local seed is idempotent and runs only against the disposable storefront
 database. It never creates production users, sends email, or touches the
 production Telegram bot.
+
+## Asset references used in the implementation
+
+The ChatGPT review is used as composition guidance only. The implementation
+keeps the existing storefront header, footer, spacing tokens, and blue palette.
+Reusable `SellerIllustration` maps each seller state to an existing local asset:
+
+- seller login: `/auth/auth-character-scene.webp`;
+- empty product list: `/account/account-package.png`;
+- payout and wallet states: `/account/account-wallet.png`;
+- review pending state: `/illustrations/invoice-pending.webp`.
+
+This keeps artwork replaceable without copying a second navbar or introducing a
+separate seller theme.
