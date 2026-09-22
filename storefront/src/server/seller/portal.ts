@@ -32,6 +32,10 @@ export async function getSellerProducts(sellerId: string) {
   return { products, drafts };
 }
 
+export async function getSellerDraft(sellerId: string, draftId: string) {
+  return prisma.sellerProductDraft.findFirst({ where: { id: draftId, sellerId }, select: { id: true, name: true, description: true, price: true, status: true, revision: true, reviewReason: true } });
+}
+
 export async function getSellerSales(sellerId: string) {
   return prisma.sellerSale.findMany({
     where: { sellerId }, orderBy: { createdAt: "desc" }, take: 100,

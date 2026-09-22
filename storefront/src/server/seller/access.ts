@@ -12,6 +12,12 @@ async function localPreviewSeller() {
       update: { status: "ACTIVE" },
     });
     await tx.sellerWallet.upsert({ where: { sellerId: seller.id }, create: { sellerId: seller.id }, update: {} });
+    await tx.sellerMembership.upsert({ where: { sellerId: seller.id }, create: { sellerId: seller.id, clerkIssuer: "local-preview", clerkUserId: "local-preview", active: true }, update: { clerkIssuer: "local-preview", clerkUserId: "local-preview", active: true } });
+    await tx.sellerMembership.upsert({
+      where: { sellerId: seller.id },
+      create: { sellerId: seller.id, clerkIssuer: "local-preview", clerkUserId: "local-preview", active: true },
+      update: { clerkIssuer: "local-preview", clerkUserId: "local-preview", active: true },
+    });
     return seller;
   });
 }

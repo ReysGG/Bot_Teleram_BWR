@@ -37,6 +37,18 @@ export async function submitSellerDraft(sellerId: string, draftId: string, revis
   });
 }
 
+export async function updateSellerDraft(sellerId: string, draftId: string, revision: number, raw: unknown) {
+  const input = sellerDraftInput.omit({ requestKey: true }).parse(raw);
+  return prisma.$transaction(async tx => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`seller:${sellerId}`}))`;
+    const seller = await tx.sellerAccount.findFirst({ where: { id: sellerId, status: "ACTIVE", memberships: { some: { active: true } } } });
+    if (!seller) throw new Error("seller_access_required");
+    const draft = await tx.sellerProductDraft.findFirst({ where: { id: draftId, sellerId, revision } });
+    if (!draft || !["DRAFT", "REJECTED"].includes(draft.status)) throw new Error("draft_changed");
+    return tx.sellerProductDraft.update({ where: { id: draft.id }, data: { ...input, revision: { increment: 1 }, status: "DRAFT", reviewReason: null } });
+  });
+}
+
 export async function reviewSellerDraft(draftId: string, revision: number, decision: "approve" | "reject", actor: string, reason: string) {
   return prisma.$transaction(async tx => {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`seller-draft:${draftId}`}))`;
