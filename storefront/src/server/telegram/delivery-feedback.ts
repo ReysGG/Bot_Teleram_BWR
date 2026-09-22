@@ -37,6 +37,10 @@ async function requireOwnedSentDelivery(
     select: {
       id: true,
       invoiceNumber: true,
+      status: true,
+      paymentStatus: true,
+      refundedAt: true,
+      items: { select: { id: true, stockItemId: true, sellerIdSnapshot: true } },
       deliveryReceipts: {
         where: { status: "SENT" },
         select: { id: true },
@@ -45,6 +49,7 @@ async function requireOwnedSentDelivery(
     },
   });
   if (!order) throw new Error("Order tidak ditemukan");
+  if (order.paymentStatus !== "PAID" || order.refundedAt || ["CANCELLED", "REFUNDED"].includes(order.status)) throw new Error("Order belum eligible untuk approval");
   if (order.deliveryReceipts.length === 0) {
     throw new Error("Belum ada file yang tercatat diterima Telegram");
   }
@@ -56,7 +61,10 @@ export async function acknowledgeOrderDelivery(input: {
   chatId: string;
 }) {
   return prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`delivery-feedback:${input.orderId}`}))`;
     const order = await requireOwnedSentDelivery(tx, input);
+    const missing = await tx.telegramNotification.findUnique({ where: { dedupeKey: deliveryMissingReportDedupeKey(order.id) }, select: { status: true } });
+    if (missing?.status === "MANUAL_REVIEW") throw new Error("Delivery sedang dalam review manual");
     const now = new Date();
     const acknowledgement = await tx.telegramNotification.upsert({
       where: { dedupeKey: deliveryAcknowledgedDedupeKey(order.id) },
@@ -65,7 +73,7 @@ export async function acknowledgeOrderDelivery(input: {
         chatId: input.chatId,
         orderId: order.id,
         kind: DELIVERY_ACKNOWLEDGED_KIND,
-        messageText: `Pembeli mengonfirmasi file ${order.invoiceNumber} sudah terlihat.`,
+        messageText: `Pembeli mengonfirmasi produk ${order.invoiceNumber} sudah bisa digunakan.`,
         status: "SENT",
         sentAt: now,
       },
@@ -82,7 +90,7 @@ export async function acknowledgeOrderDelivery(input: {
         status: "SENT",
         sentAt: now,
         lastError: null,
-        messageText: `Laporan file ${order.invoiceNumber} diselesaikan oleh konfirmasi pembeli.`,
+        messageText: `Laporan produk ${order.invoiceNumber} diselesaikan oleh konfirmasi usability pembeli.`,
       },
     });
     await releaseSellerEarningsAfterApproval(tx, order.id, `buyer:${input.chatId}`);
@@ -98,8 +106,14 @@ export async function releaseSellerEarningsAfterApproval(
 ) {
   const items = await tx.orderItem.findMany({
     where: { orderId, sellerIdSnapshot: { not: null } },
-    select: { id: true, sellerIdSnapshot: true, sellerCommissionBpsSnapshot: true, unitPrice: true, sellerHoldSecondsSnapshot: true },
+    select: { id: true, stockItemId: true, sellerIdSnapshot: true, sellerCommissionBpsSnapshot: true, unitPrice: true, sellerHoldSecondsSnapshot: true },
   });
+  const sellerIds = [...new Set(items.map(item => item.sellerIdSnapshot).filter((id): id is string => Boolean(id)))].sort();
+  for (const sellerId of sellerIds) await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`seller-wallet:${sellerId}`}))`;
+  const order = await tx.order.findUniqueOrThrow({ where: { id: orderId }, select: { paymentStatus: true, refundedAt: true, status: true, deliveryReceipts: { select: { stockItemId: true, status: true } } } });
+  if (order.paymentStatus !== "PAID" || order.refundedAt || ["CANCELLED", "REFUNDED"].includes(order.status)) throw new Error("Order belum eligible untuk settlement seller");
+  const receipts = new Map(order.deliveryReceipts.map(receipt => [receipt.stockItemId, receipt.status]));
+  if (items.some(item => !item.stockItemId || receipts.get(item.stockItemId) !== "SENT")) throw new Error("Semua produk seller harus terkirim sebelum approval");
   for (const item of items) {
     if (!item.sellerIdSnapshot) continue;
     const existing = await tx.sellerSale.findUnique({ where: { orderItemId: item.id } });
@@ -107,9 +121,12 @@ export async function releaseSellerEarningsAfterApproval(
     const commission = Math.floor(item.unitPrice * (item.sellerCommissionBpsSnapshot ?? 0) / 10000);
     const net = item.unitPrice - commission;
     const sale = existing ?? await tx.sellerSale.create({ data: { sellerId: item.sellerIdSnapshot, orderItemId: item.id, gross: item.unitPrice, commission, net, holdSeconds: item.sellerHoldSecondsSnapshot ?? 0, status: "PENDING" } });
+    const journalKey = `seller-release:order-item:${item.id}`;
+    const journal = await tx.sellerJournal.findUnique({ where: { sourceKey: journalKey }, select: { id: true } });
+    if (journal) continue;
     await tx.sellerSale.update({ where: { id: sale.id }, data: { status: "AVAILABLE", eligibleAt: new Date() } });
     await tx.sellerWallet.upsert({ where: { sellerId: item.sellerIdSnapshot }, create: { sellerId: item.sellerIdSnapshot, available: net }, update: { available: { increment: net } } });
-    try { await tx.sellerJournal.create({ data: { sellerId: item.sellerIdSnapshot, sourceKey: `seller-release:order-item:${item.id}`, kind: "BUYER_APPROVED_USABLE", available: net, actor, reason: `Buyer approved usable delivery for order ${orderId}` } }); } catch (error) { if (!(error instanceof Error && error.message.includes("Unique"))) throw error; }
+    await tx.sellerJournal.create({ data: { sellerId: item.sellerIdSnapshot, sourceKey: journalKey, kind: "BUYER_APPROVED_USABLE", available: net, actor, reason: `Buyer approved usable delivery for order ${orderId}` } });
   }
 }
 
@@ -118,6 +135,7 @@ export async function reportMissingOrderDelivery(input: {
   chatId: string;
 }) {
   return prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`delivery-feedback:${input.orderId}`}))`;
     const order = await requireOwnedSentDelivery(tx, input);
     return tx.telegramNotification.upsert({
       where: { dedupeKey: deliveryMissingReportDedupeKey(order.id) },

@@ -5,6 +5,7 @@ export async function transitionSellerWithdrawal(input: { id: string; actor: str
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`seller-withdrawal:${input.id}`}))`;
     const w = await tx.sellerWithdrawal.findUnique({ where: { id: input.id }, include: { seller: true } });
     if (!w) throw new Error("withdrawal_not_found");
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`seller-wallet:${w.sellerId}`}))`;
     const allowed: Record<string, string[]> = { approve:["REQUESTED"], reject:["REQUESTED","APPROVED"], start:["APPROVED"], paid:["PROCESSING"], fail:["PROCESSING"] };
     if (!allowed[input.action]?.includes(w.status)) throw new Error("withdrawal_state_changed");
     if (input.action === "approve") return tx.sellerWithdrawal.update({ where: { id:w.id }, data:{status:"APPROVED",operator:input.actor,version:{increment:1}} });
