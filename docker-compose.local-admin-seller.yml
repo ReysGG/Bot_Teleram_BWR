@@ -20,6 +20,22 @@ services:
     networks: [local-backend]
     logging: *local-logging
 
+  storefront-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: storefront_local
+      POSTGRES_PASSWORD: disposable_local_only
+      POSTGRES_DB: storefront_local
+    volumes:
+      - telegram_local_admin_seller_storefront_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U storefront_local -d storefront_local"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [local-backend]
+    logging: *local-logging
+
   migrate:
     build:
       context: .
@@ -93,8 +109,10 @@ services:
     environment:
       HOSTNAME: 0.0.0.0
       PORT: 3000
+      DATABASE_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
+      DIRECT_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
     depends_on:
-      app: {condition: service_healthy}
+      storefront-migrate: {condition: service_completed_successfully}
     ports: ["127.0.0.1:34110:3000"]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
@@ -105,8 +123,23 @@ services:
     networks: [local-backend]
     logging: *local-logging
 
+  storefront-migrate:
+    build:
+      context: storefront
+      target: migrator
+    command: ["npx", "prisma", "db", "push"]
+    environment:
+      DATABASE_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
+      DIRECT_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
+    depends_on:
+      storefront-db: {condition: service_healthy}
+    restart: "no"
+    networks: [local-backend]
+    logging: *local-logging
+
 volumes:
   telegram_local_admin_seller_db:
+  telegram_local_admin_seller_storefront_db:
 
 networks:
   local-backend:

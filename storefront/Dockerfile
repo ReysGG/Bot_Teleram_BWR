@@ -17,6 +17,11 @@ RUN npm run typecheck \
   && node --experimental-strip-types --test tests/*.test.mjs \
   && npm run build
 
+FROM deps AS migrator
+COPY prisma ./prisma
+COPY prisma.config.ts ./
+CMD ["npx", "prisma", "migrate", "deploy"]
+
 FROM node:24-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
