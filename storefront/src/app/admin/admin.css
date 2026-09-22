@@ -1630,3 +1630,6 @@ td small { display: block; color: var(--muted); margin-top: 4px; }
 }
 
 }
+.admin-management-bar { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); margin-bottom: 24px; color: var(--navy); }
+.admin-management-bar strong { font-size: 1.05rem; letter-spacing: -.02em; }
+.admin-management-bar span { color: var(--muted); font-size: .8rem; }
