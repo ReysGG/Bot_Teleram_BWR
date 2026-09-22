@@ -566,6 +566,11 @@ h2 { margin-bottom: 0; font-size: clamp(1.55rem, 2.8vw, 2.5rem); line-height: 1.
 .order-detail-page { padding-block: 42px 80px; }
 .order-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .8fr); gap: 20px; }
 .order-detail-panel, .order-delivery-panel { border: 1px solid var(--line); border-radius: 17px; padding: 22px; background: white; }
+.order-approval-panel, .order-approval-success { display: grid; gap: 10px; margin-top: 16px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface, #f7faff); }
+.order-approval-panel p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.55; }
+.order-approval-panel .button { justify-self: start; }
+.order-approval-panel small { color: var(--danger, #b42318); }
+.order-approval-success { border-color: #9bd8bd; background: #effbf5; color: #116149; }
 .order-detail-panel h2, .order-delivery-panel h2 { font-size: 1.35rem; }
 .order-detail-list { display: grid; gap: 0; margin: 18px 0 0; }
 .order-detail-list > div { display: flex; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); padding: 12px 0; }

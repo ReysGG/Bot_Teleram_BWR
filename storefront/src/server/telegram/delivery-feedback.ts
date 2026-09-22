@@ -73,7 +73,7 @@ export async function acknowledgeOrderDelivery(input: {
         chatId: input.chatId,
         orderId: order.id,
         kind: DELIVERY_ACKNOWLEDGED_KIND,
-        messageText: `Pembeli mengonfirmasi produk ${order.invoiceNumber} sudah bisa digunakan.`,
+        messageText: `Pembeli mengonfirmasi file ${order.invoiceNumber} sudah diterima.`,
         status: "SENT",
         sentAt: now,
       },
@@ -93,7 +93,6 @@ export async function acknowledgeOrderDelivery(input: {
         messageText: `Laporan produk ${order.invoiceNumber} diselesaikan oleh konfirmasi usability pembeli.`,
       },
     });
-    await releaseSellerEarningsAfterApproval(tx, order.id, `buyer:${input.chatId}`);
     return acknowledgement;
   });
 }
@@ -112,12 +111,13 @@ export async function releaseSellerEarningsAfterApproval(
   for (const sellerId of sellerIds) await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`seller-wallet:${sellerId}`}))`;
   const order = await tx.order.findUniqueOrThrow({ where: { id: orderId }, select: { paymentStatus: true, refundedAt: true, status: true, deliveryReceipts: { select: { stockItemId: true, status: true } } } });
   if (order.paymentStatus !== "PAID" || order.refundedAt || ["CANCELLED", "REFUNDED"].includes(order.status)) throw new Error("Order belum eligible untuk settlement seller");
-  const receipts = new Map(order.deliveryReceipts.map(receipt => [receipt.stockItemId, receipt.status]));
-  if (items.some(item => !item.stockItemId || receipts.get(item.stockItemId) !== "SENT")) throw new Error("Semua produk seller harus terkirim sebelum approval");
+  const delivered = new Set(order.deliveryReceipts.filter(receipt => receipt.status === "SENT").map(receipt => receipt.stockItemId));
+  if (items.some(item => !item.stockItemId || !delivered.has(item.stockItemId))) throw new Error("Semua produk seller harus terkirim sebelum approval");
   for (const item of items) {
     if (!item.sellerIdSnapshot) continue;
     const existing = await tx.sellerSale.findUnique({ where: { orderItemId: item.id } });
     if (existing?.status === "AVAILABLE" || existing?.status === "PAID") continue;
+    if (existing && existing.status !== "PENDING") throw new Error("seller_sale_not_eligible");
     const commission = Math.floor(item.unitPrice * (item.sellerCommissionBpsSnapshot ?? 0) / 10000);
     const net = item.unitPrice - commission;
     const sale = existing ?? await tx.sellerSale.create({ data: { sellerId: item.sellerIdSnapshot, orderItemId: item.id, gross: item.unitPrice, commission, net, holdSeconds: item.sellerHoldSecondsSnapshot ?? 0, status: "PENDING" } });

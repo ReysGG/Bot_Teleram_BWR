@@ -9,6 +9,7 @@ import { OrderLogin } from "./order-login";
 import { OrderPaymentPanel } from "./order-payment-panel";
 import { OrderResources } from "./order-resources";
 import { SupportCard } from "../site/support-card";
+import { ProductApproval } from "./product-approval";
 import styles from "./order-detail.module.css";
 
 export function orderPresentation(order: StorefrontOrderDetail) {
@@ -53,7 +54,7 @@ export function OrderDetailView({ order }: { order: StorefrontOrderDetail }) {
             {paid && ["READY", "SENT"].includes(delivery.status) ? <DownloadDelivery invoice={order.invoiceNumber} receipt={delivery.id} filename={delivery.filename} downloaded={delivery.status === "SENT"} /> : <span>Belum siap</span>}
           </article>)}</div>}
         </section> : null}
-        {paid && order.deliveredFiles > 0 && state.tone !== "closed" ? <OrderLogin key={order.invoiceNumber} invoiceNumber={order.invoiceNumber} /> : null}
+        {paid && order.deliveredFiles > 0 && state.tone !== "closed" ? <><ProductApproval invoice={order.invoiceNumber} /><OrderLogin key={order.invoiceNumber} invoiceNumber={order.invoiceNumber} /></> : null}
       </div>
       <aside className={styles.summary} aria-label="Ringkasan transaksi"><h2><Icon name="receipt" size={21} /> Ringkasan transaksi</h2><div className={styles.amount}><span>Total pembayaran</span><strong>{formatRupiah(order.billedAmount)}</strong></div>
         <dl><div><dt>Jumlah produk</dt><dd>{order.quantity} item</dd></div><div><dt>Metode pembayaran</dt><dd>{order.paymentMethod?.replaceAll("_", " ") ?? "—"}</dd></div><div><dt>Dibuat</dt><dd>{date(order.createdAt)} WIB</dd></div>{paid && order.paidAt ? <div><dt>Dibayar</dt><dd>{date(order.paidAt)} WIB</dd></div> : null}{pending ? <div><dt>Batas pembayaran</dt><dd>{date(order.expiresAt)} WIB</dd></div> : null}<div><dt>Status</dt><dd>{state.label}</dd></div></dl>

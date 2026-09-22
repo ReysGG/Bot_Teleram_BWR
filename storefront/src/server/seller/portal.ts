@@ -75,3 +75,15 @@ export async function getAdminSellerDetail(sellerId: string) {
 export async function getAdminSellerWithdrawals() {
   return prisma.sellerWithdrawal.findMany({ where: { status: { not: "PAID" } }, orderBy: { createdAt: "asc" }, take: 200, select: { id: true, amount: true, status: true, operator: true, reference: true, reason: true, createdAt: true, seller: { select: { id: true, displayName: true, slug: true, status: true } }, account: { select: { bank: true, holder: true, masked: true, status: true } } } });
 }
+
+export async function getAdminSellerWithdrawal(id: string) {
+  return prisma.sellerWithdrawal.findUnique({
+    where: { id },
+    select: {
+      id: true, amount: true, status: true, operator: true, reference: true,
+      reason: true, paidAt: true, createdAt: true, updatedAt: true, version: true,
+      seller: { select: { id: true, displayName: true, slug: true, status: true } },
+      account: { select: { id: true, bank: true, holder: true, masked: true, status: true } },
+    },
+  });
+}

@@ -1,3 +1,5 @@
+@reference "../globals.css";
+
 @layer components {
   .admin-layout { @apply min-h-screen grid grid-cols-[232px_minmax(0,1fr)] bg-[var(--paper)]; }
   .admin-sidebar { @apply sticky top-0 z-10 h-screen overflow-auto border-r border-[var(--line)] bg-white p-[22px_12px]; }

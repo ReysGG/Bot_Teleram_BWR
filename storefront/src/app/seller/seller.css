@@ -1,3 +1,5 @@
+@reference "../globals.css";
+
 @layer components {
   .seller-main { @apply mx-auto min-h-[calc(100vh-180px)] w-[min(1320px,calc(100%-40px))] px-0 pb-[72px] pt-6; }
   .seller-subnav { @apply mb-7 flex items-center gap-2 overflow-auto border-b border-[var(--line)] pb-3; }
