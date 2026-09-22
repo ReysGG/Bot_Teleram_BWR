@@ -10,6 +10,7 @@ import {
 export async function submitAdminForm(
   form: HTMLFormElement,
   fetchImpl: typeof fetch = fetch,
+  allowedRedirectPrefixes = ["/admin"],
 ): Promise<AdminFormResponse> {
   const response = await fetchImpl(form.action, {
     method: form.method || "post",
@@ -28,7 +29,7 @@ export async function submitAdminForm(
     return { ok: false, error: response.status === 401 ? "admin-session" : "invalid-response" };
   }
 
-  if (!isAdminFormResponse(payload)) {
+  if (!isAdminFormResponse(payload, allowedRedirectPrefixes)) {
     return { ok: false, error: response.status === 401 ? "admin-session" : "invalid-response" };
   }
   return payload;

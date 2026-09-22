@@ -25,3 +25,10 @@ has a unique journal source key.
 
 The implementation is local-only while seller settlement is tested. Production
 flags remain disabled and no production database migration or payout is run.
+
+## Visual reference
+
+The seller approval/wallet/payout mockup was requested through Chrome ChatGPT
+using synthetic data and the existing storefront palette:
+
+https://chatgpt.com/c/6ab2836b-b3b8-83ec-9534-caaae5e6f41a

@@ -26,11 +26,15 @@ export function StockUploadForm({
   products = [],
   product,
   returnTo,
+  action = "/api/admin/inventory",
+  allowedRedirectPrefixes = ["/admin"],
 }: {
   compact?: boolean;
   products?: ProductOption[];
   product?: ProductOption;
   returnTo?: string;
+  action?: string;
+  allowedRedirectPrefixes?: string[];
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
@@ -44,6 +48,7 @@ export function StockUploadForm({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [requestKey] = useState(() => crypto.randomUUID());
   const disabled = !product && products.length === 0;
   const selectedProduct = product ?? products.find((item) => item.id === selectedProductId);
   const pastedLineCount = countUniquePastedStockLines(stockLines);
@@ -124,7 +129,7 @@ export function StockUploadForm({
     setUploadError(null);
     setConfirmOpen(false);
     try {
-      const result = await submitAdminForm(form);
+      const result = await submitAdminForm(form, fetch, allowedRedirectPrefixes);
       if (!result.ok) {
         setUploadError(stockUploadErrorMessage(result.error));
         setUploading(false);
@@ -143,13 +148,14 @@ export function StockUploadForm({
     <>
       <form
         ref={formRef}
-        action="/api/admin/inventory"
+        action={action}
         method="post"
         encType="multipart/form-data"
         className={`stack-form stock-upload-form${compact ? " is-compact" : ""}`}
         onSubmit={handleSubmit}
       >
       {returnTo ? <input name="returnTo" type="hidden" value={returnTo} /> : null}
+      <input name="requestKey" type="hidden" value={requestKey} />
       {product ? (
         <div className="selected-files stock-upload-product">
           <div>
