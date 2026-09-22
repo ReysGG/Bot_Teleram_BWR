@@ -23,10 +23,21 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const hasClerk = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  const shopContent = <>
+    {process.env.STOREFRONT_PREVIEW_READ_ONLY === "true" ? (
+      <aside className="preview-banner" aria-label="Status website">
+        <strong>Versi uji</strong><span>Katalog bisa dilihat. Pembelian dan pembayaran melalui website belum tersedia.</span>
+      </aside>
+    ) : null}
+    <CartProvider>{children}</CartProvider>
+    {hasClerk ? <LoginFeedback /> : null}
+    <FloatingQuickLinks />
+  </>;
   return (
     <>
       <div className="shop-surface">
-        <ClerkProvider
+        {hasClerk ? <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
           appearance={{
             variables: {
@@ -51,16 +62,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               start: { ...idID.signUp?.start, title: "Buat akunmu", subtitle: "Isi data berikut untuk membuat akun." },
             },
           }}
-        >
-          {process.env.STOREFRONT_PREVIEW_READ_ONLY === "true" ? (
-            <aside className="preview-banner" aria-label="Status website">
-              <strong>Versi uji</strong><span>Katalog bisa dilihat. Pembelian dan pembayaran melalui website belum tersedia.</span>
-            </aside>
-          ) : null}
-          <CartProvider>{children}</CartProvider>
-          <LoginFeedback />
-          <FloatingQuickLinks />
-        </ClerkProvider>
+        >{shopContent}</ClerkProvider> : shopContent}
       </div>
     </>
   );

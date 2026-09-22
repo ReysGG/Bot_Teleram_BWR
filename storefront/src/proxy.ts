@@ -13,6 +13,7 @@ const customerMiddleware = clerkMiddleware((_auth, request) => {
 
 export default function proxy(request: NextRequest, event: NextFetchEvent) {
   const pathname = request.nextUrl.pathname;
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) return NextResponse.next();
   // Admin retains its signed server-side session and per-action origin checks.
   // It must not depend on a customer Clerk key or customer preview flag.
   if (pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/") || pathname === "/api/health" || ((pathname === "/seller" || pathname.startsWith("/seller/")) && process.env.SELLER_PORTAL_ENABLED !== "true")) {
