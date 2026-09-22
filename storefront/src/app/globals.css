@@ -1,4 +1,4 @@
-:root {
+@import "tailwindcss";`r`n:root {
   --navy: #0a1736;
   --navy-soft: #22335a;
   --blue: #1769ff;
