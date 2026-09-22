@@ -13,10 +13,28 @@ import { useState } from "react";
 import { useCart } from "@/components/cart/cart-context";
 import { CartPreview } from "@/components/cart/cart-preview";
 import { Icon } from "@/components/ui/icon";
+import { useLocalPreview } from "@/components/auth/local-preview-context";
 
 type SiteHeaderProps = { active?: "home" | "shop" | "categories" | "orders" | "account" | "sms" };
 
-export function SiteHeader({ active }: SiteHeaderProps) {
+export function SiteHeader({ active, mode }: SiteHeaderProps & { mode?: "management" }) {
+  const preview = useLocalPreview();
+  if (preview || mode === "management") return <PublicHeader management={mode === "management"} />;
+  return <CustomerHeader active={active} />;
+}
+
+function PublicHeader({management}:{management:boolean}) {
+  return <header className="site-header">
+    <Link className="site-logo" href="/"><span className="site-logo-mark">B</span><span>BWR <em>TELE</em></span></Link>
+    <nav aria-label="Navigasi halaman" style={{display:"flex",gap:20,flexWrap:"wrap"}}>
+      <Link href="/shop">Shop</Link><Link href="/categories">Kategori</Link>
+      {management ? <><Link href="/admin">Dashboard admin</Link><Link href="/admin/products">Produk</Link><Link href="/admin/inventory/available">Stok</Link></> : <Link href="/seller">Seller</Link>}
+    </nav>
+    {!management ? <span className="header-sign-in">Pratinjau lokal</span> : null}
+  </header>;
+}
+
+function CustomerHeader({ active }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { itemCount, error, errorCode, pending, retryRequired, retry } = useCart();

@@ -9,6 +9,7 @@ import { productCanEnterCart } from "@/lib/catalog-types";
 import { animateCartAddition } from "@/components/cart/cart-add-animation";
 import { beginCartIntent } from "@/lib/pending-cart-intent";
 import { useCart } from "@/components/cart/cart-context";
+import { useLocalPreview } from "@/components/auth/local-preview-context";
 
 export function AddToCartButton({
   product,
@@ -19,6 +20,11 @@ export function AddToCartButton({
   compact?: boolean;
   iconOnly?: boolean;
 }) {
+  const preview = useLocalPreview();
+  if (preview) return <button className={"add-cart-button" + (compact ? " is-compact" : "")} disabled title="Pembelian dinonaktifkan pada pratinjau lokal">{iconOnly ? <Icon name="cart" size={17}/> : "Pratinjau"}</button>;
+  return <AuthenticatedAddToCartButton product={product} compact={compact} iconOnly={iconOnly}/>;
+}
+function AuthenticatedAddToCartButton({product,compact,iconOnly}:{product:StorefrontProduct;compact:boolean;iconOnly:boolean}) {
   const { add, hydrated, pending, retryRequired, error, errorCode } = useCart();
   const [adding, setAdding] = useState(false);
   const { isLoaded, isSignedIn } = useAuth();

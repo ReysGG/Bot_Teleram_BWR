@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth, useClerk } from "@clerk/nextjs";
+import { useLocalPreview } from "@/components/auth/local-preview-context";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { productCanEnterCart } from "@/lib/catalog-types";
@@ -36,6 +37,22 @@ const messages: Record<string, string> = {
 };
 const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
+  const preview = useLocalPreview();
+  if (preview) return <ReadonlyCartProvider>{children}</ReadonlyCartProvider>;
+  return <AuthenticatedCartProvider>{children}</AuthenticatedCartProvider>;
+}
+
+const readonlyCart: CartContextValue = {
+  items: [], itemCount: 0, subtotal: 0, hydrated: true, pending: false,
+  error: null, errorCode: null, retryRequired: false,
+  refresh: async () => {}, retry: async () => false, add: async () => false,
+  resumeAdd: async () => false, setQuantity: async () => false,
+  remove: async () => false, clear: async () => false,
+};
+function ReadonlyCartProvider({children}:{children:ReactNode}) {
+  return <CartContext.Provider value={readonlyCart}>{children}</CartContext.Provider>;
+}
+function AuthenticatedCartProvider({ children }: { children: ReactNode }) {
   const { isLoaded, isSignedIn, userId, getToken } = useAuth();
   const clerk = useClerk();
   const pathname = usePathname();

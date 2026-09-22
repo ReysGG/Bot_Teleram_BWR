@@ -13,11 +13,17 @@ const customerMiddleware = clerkMiddleware((_auth, request) => {
 
 export default function proxy(request: NextRequest, event: NextFetchEvent) {
   const pathname = request.nextUrl.pathname;
-  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) return NextResponse.next();
   // Admin retains its signed server-side session and per-action origin checks.
   // It must not depend on a customer Clerk key or customer preview flag.
   if (pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/") || pathname === "/api/health" || ((pathname === "/seller" || pathname.startsWith("/seller/")) && process.env.SELLER_PORTAL_ENABLED !== "true")) {
     return NextResponse.next();
+  }
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+    const preview = process.env.STOREFRONT_PREVIEW_MODE === "true" && process.env.STOREFRONT_PREVIEW_READ_ONLY === "true";
+    const publicPage = pathname === "/" || /^\/(shop|categories|products)(\/|$)/.test(pathname) || pathname === "/robots.txt" || pathname === "/sitemap.xml" || pathname.startsWith("/_next/") || pathname === "/icon.svg";
+    const catalogRead = /^\/api\/catalog\/(batch|search-index)$/.test(pathname);
+    if (preview && ["GET", "HEAD"].includes(request.method) && (publicPage || catalogRead)) return NextResponse.next();
+    return NextResponse.json({ok:false,code:preview?"preview_read_only":"auth_not_configured"},{status:503,headers:{"cache-control":"private, no-store"}});
   }
   return customerMiddleware(request, event);
 }

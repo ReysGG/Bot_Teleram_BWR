@@ -6,6 +6,7 @@ import { CartProvider } from "@/components/cart/cart-context";
 import { FloatingQuickLinks } from "@/components/site/floating-quick-links";
 import { LoginFeedback } from "@/components/auth/login-feedback";
 import "../globals.css";
+import { LocalPreviewProvider } from "@/components/auth/local-preview-context";
 
 // Deployment flags must be evaluated at runtime, not baked into the Docker build.
 export const dynamic = "force-dynamic";
@@ -62,7 +63,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               start: { ...idID.signUp?.start, title: "Buat akunmu", subtitle: "Isi data berikut untuk membuat akun." },
             },
           }}
-        >{shopContent}</ClerkProvider> : shopContent}
+        >{shopContent}</ClerkProvider> : <LocalPreviewProvider>{shopContent}</LocalPreviewProvider>}
       </div>
     </>
   );
