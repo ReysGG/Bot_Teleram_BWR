@@ -29,6 +29,7 @@ import type { AdminInventoryCounts } from "@/server/admin/inventory";
 
 export type AdminSection =
   | "overview"
+  | "sellerProducts"
   | "reports"
   | "products"
   | "inactiveProducts"
@@ -62,6 +63,7 @@ export function AdminSidebar({
   email?: string;
 }) {
   const links = [
+    { key: "sellerProducts" as const, href: "/admin/seller-products/reviews", label: "Review produk seller", icon: BadgeCheck },
     { key: "overview" as const, href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { key: "reports" as const, href: "/admin/reports", label: "Laporan penjualan", icon: ChartNoAxesCombined },
     { key: "paymentSettings" as const, href: "/admin/payment-settings", label: "Metode pembayaran", icon: Settings2 },

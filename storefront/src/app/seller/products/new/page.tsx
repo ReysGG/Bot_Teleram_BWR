@@ -1,1 +1,6 @@
-export default function NewSellerProductPage() { return <section className="seller-panel"><p className="seller-eyebrow">DRAFT PRODUK</p><h1>Buat produk</h1><p className="seller-muted">Form produk seller akan memakai review, ownership, dan stock boundary lokal yang sama dengan rencana seller.</p><div className="seller-empty"><strong>Onboarding seller belum diaktifkan</strong><p>Aktifkan membership seller dari admin lokal sebelum membuat draft.</p></div></section>; }
+import { requireSellerPage } from "@/server/seller/access";
+import { SellerDraftForm } from "@/components/seller/draft-form";
+export default async function NewSellerProductPage() {
+  await requireSellerPage();
+  return <section className="seller-panel"><p className="seller-eyebrow">DRAFT PRODUK</p><h1>Buat produk</h1><p>Draft tersimpan privat sampai dikirim untuk review admin.</p><SellerDraftForm/></section>;
+}

@@ -305,6 +305,33 @@ model SellerAccount {
   memberships   SellerMembership[]
   products      Product[]
   ratings       SellerRating[]
+  drafts        SellerProductDraft[]
+}
+
+enum SellerDraftStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+model SellerProductDraft {
+  id          String @id @default(cuid())
+  sellerId    String
+  seller      SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  name        String
+  description String @db.Text
+  price       Int
+  status      SellerDraftStatus @default(DRAFT)
+  revision    Int @default(1)
+  reviewReason String?
+  reviewedBy  String?
+  publishedProductId String? @unique
+  requestKey  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([sellerId, requestKey])
+  @@index([sellerId, status, updatedAt])
 }
 
 model SellerMembership {
