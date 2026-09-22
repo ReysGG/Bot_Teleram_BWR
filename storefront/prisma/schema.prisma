@@ -279,6 +279,7 @@ model Product {
   webCartItems               WebCartItem[]
   orderItems                 OrderItem[]
   notifications              TelegramNotification[]
+  ratings                    ProductRating[]
 
   @@index([groupId, status, groupSortOrder, createdAt])
   @@index([status, createdAt])
@@ -303,6 +304,7 @@ model SellerAccount {
   updatedAt     DateTime @updatedAt
   memberships   SellerMembership[]
   products      Product[]
+  ratings       SellerRating[]
 }
 
 model SellerMembership {
@@ -314,6 +316,38 @@ model SellerMembership {
   active      Boolean @default(true)
   createdAt   DateTime @default(now())
   @@unique([clerkIssuer, clerkUserId])
+}
+
+model ProductRating {
+  id          String @id @default(cuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  customerId  String
+  customer    WebCustomer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  orderItemId String @unique
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  orderId     String
+  stars       Int
+  review      String? @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([productId, createdAt])
+  @@unique([orderId, productId])
+}
+
+model SellerRating {
+  id          String @id @default(cuid())
+  sellerId    String
+  seller      SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  customerId  String
+  customer    WebCustomer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  orderId     String @unique
+  order       Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  stars       Int
+  review      String? @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([sellerId, createdAt])
 }
 
 model ProductGroup {
@@ -571,6 +605,7 @@ model Order {
   deliveryReceipts              SentDelivery[]
   walletTransactions            WalletTransaction[]
   accountRedeemEvents           AccountRedeemEvent[]
+  sellerRatings                 SellerRating[]
 
   @@index([chatId, createdAt])
   @@index([chatId, status, expiresAt])
@@ -599,6 +634,8 @@ model WebCustomer {
   orders              Order[]
   sessions            WebCustomerSession[]
   cart                WebCart?
+  productRatings      ProductRating[]
+  sellerRatings       SellerRating[]
 
   @@index([createdAt])
   @@index([lockedUntil])
@@ -984,6 +1021,7 @@ model OrderItem {
   productId                String
   product                  Product           @relation(fields: [productId], references: [id], onDelete: Restrict)
   productNameSnapshot      String
+  sellerIdSnapshot         String?
   productGroupIdSnapshot   String?
   productGroupNameSnapshot String?
   variantLabelSnapshot     String?
@@ -992,6 +1030,7 @@ model OrderItem {
   stockItemId              String?           @unique
   stockItem                DigitalStockItem? @relation(fields: [stockItemId], references: [id], onDelete: Restrict)
   createdAt                DateTime          @default(now())
+  productRating            ProductRating?
 
   @@index([orderId])
   @@index([productId])
