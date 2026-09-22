@@ -6,6 +6,8 @@ import {
   type AdminSection,
 } from "@/components/admin/admin-sidebar";
 import { AdminTableSorter } from "@/components/admin/admin-table-sorter";
+import { SiteHeader } from "@/components/site/site-header";
+import { SiteFooter } from "@/components/site/site-footer";
 
 export function AdminShell({
   active,
@@ -27,7 +29,7 @@ export function AdminShell({
   children: ReactNode;
 }) {
   return (
-    <main className="admin-layout">
+    <><SiteHeader active="account" /><main className="admin-layout">
       <AdminSearchNavigation />
       <AdminSidebar active={active} counts={counts} email={email} />
 
@@ -42,6 +44,6 @@ export function AdminShell({
         </header>
         {children}
       </section>
-    </main>
+    </main><SiteFooter /></>
   );
 }
