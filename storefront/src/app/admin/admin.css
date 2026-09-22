@@ -1633,3 +1633,16 @@ td small { display: block; color: var(--muted); margin-top: 4px; }
 .admin-management-bar { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); margin-bottom: 24px; color: var(--navy); }
 .admin-management-bar strong { font-size: 1.05rem; letter-spacing: -.02em; }
 .admin-management-bar span { color: var(--muted); font-size: .8rem; }
+
+/* Storefront management shell: the customer header/footer is intentionally
+   absent on admin routes. Keep the same blue storefront tokens and spacing. */
+.admin-surface{min-height:100vh;background:var(--paper);color:var(--navy);font-family:"Bahnschrift","Aptos","Trebuchet MS",sans-serif}
+.admin-layout{min-height:100vh;display:grid;grid-template-columns:232px minmax(0,1fr);background:var(--paper)}
+.admin-sidebar{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);background:#fff;padding:22px 12px;z-index:4}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:8px 10px 24px;border-bottom:1px solid var(--line);color:var(--navy)}
+.sidebar-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px 7px 12px 7px;background:linear-gradient(135deg,var(--blue),#54b0ff);color:#fff;font-weight:950;transform:rotate(-5deg)}
+.sidebar-brand strong{font-size:1rem}.sidebar-brand strong em{color:var(--blue);font-style:normal}.sidebar-brand small{display:block;margin-top:3px;color:var(--muted);font-size:.68rem}
+.sidebar-nav{display:grid;gap:4px;padding-top:18px}.sidebar-link{display:flex;align-items:center;justify-content:space-between;min-height:42px;border-radius:10px;padding:0 11px;color:var(--navy-soft);font-size:.82rem;font-weight:750;text-decoration:none}.sidebar-link:hover,.sidebar-link.is-active{background:var(--sky);color:var(--blue)}.sidebar-link-main{display:flex;align-items:center;gap:10px}.sidebar-link b{color:var(--muted);font-size:.7rem}
+.admin-content{min-width:0;padding:0 max(24px,calc((100vw - 1360px)/2)) 64px}.admin-management-bar{min-height:70px;margin:0 0 26px;padding:0 4px}.admin-page-header{margin-bottom:24px}.admin-page-header h1{font-size:clamp(2rem,4vw,3.5rem);color:var(--navy)}.admin-page-header .eyebrow{color:var(--blue)}.admin-description{color:var(--muted)}
+.admin-content .panel{border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:22px}.admin-content .metric-grid{gap:14px}.admin-content .metric-card{border:1px solid var(--line);border-radius:16px;box-shadow:none}.admin-content .table-wrap{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:auto}.admin-content table{background:#fff}.admin-content th{background:var(--surface);color:var(--navy-soft)}.admin-content td{border-color:var(--line)}
+@media(max-width:900px){.admin-layout{display:block}.admin-sidebar{position:sticky;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:12px}.sidebar-brand{padding:5px 8px 10px}.sidebar-nav{display:flex;overflow:auto;padding-top:10px}.sidebar-link{flex:0 0 auto}.sidebar-footer{display:none}.admin-content{padding:0 16px 48px}.admin-management-bar{min-height:58px}.admin-content .table-wrap{border:0;background:transparent}.admin-content table{min-width:720px}}

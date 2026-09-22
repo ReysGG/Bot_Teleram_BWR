@@ -92,10 +92,10 @@ export function AdminSidebar({
   return (
     <aside className="admin-sidebar">
       <div className="sidebar-brand">
-        <span className="sidebar-mark">KS</span>
+        <span className="sidebar-mark">B</span>
         <div>
-          <strong>K12 Stockroom</strong>
-          <small>Independent store</small>
+          <strong>BWR <em>TELE</em></strong>
+          <small>Admin workspace</small>
         </div>
       </div>
 
