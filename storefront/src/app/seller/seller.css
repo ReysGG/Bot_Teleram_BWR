@@ -56,12 +56,30 @@
   .seller-upload-card { @apply mt-6 rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-5; }
   .seller-upload-card .stock-upload-form { @apply grid gap-4; }
   .seller-upload-card .stock-upload-form .button-light { @apply border-0 bg-[var(--blue)] text-white; }
+  .seller-login-grid { @apply grid grid-cols-[1.1fr_.9fr] items-stretch gap-6 py-8; }
+  .seller-login-grid > .seller-panel { @apply self-center; }
+  .seller-login-art { @apply relative grid min-h-[480px] content-between overflow-hidden rounded-[24px] border border-[#cfe0fb] bg-[linear-gradient(145deg,#0e2857_0%,#1d6dff_72%,#8bb8ff_100%)] p-10 text-white shadow-[var(--shadow)]; }
+  .seller-login-art::after { content:""; @apply absolute -right-20 -top-20 h-64 w-64 rounded-full border-[30px] border-white/15; }
+  .seller-login-mark { @apply relative z-[1] grid h-16 w-16 place-items-center rounded-[20px] bg-white text-4xl font-black text-[var(--blue)] shadow-[0_16px_40px_rgba(7,31,77,.25)]; }
+  .seller-login-art > div { @apply relative z-[1] grid max-w-[440px] gap-3; }
+  .seller-login-art .seller-eyebrow { @apply text-[#cfe0fb]; }
+  .seller-login-art strong { @apply text-4xl leading-tight tracking-[-.04em]; }
+  .seller-login-art small { @apply text-base leading-relaxed text-[#e7f0ff]; }
+  .seller-login-orbit { @apply absolute rounded-full border border-white/20; }
+  .seller-login-orbit-one { @apply -bottom-24 -right-14 h-72 w-72; }
+  .seller-login-orbit-two { @apply -bottom-10 right-14 h-44 w-44; }
+  .seller-login-copy { @apply grid gap-4; }
+  .seller-login-copy p { @apply m-0 leading-relaxed text-[var(--muted)]; }
+  .seller-login-copy .seller-button { @apply w-full; }
+  .seller-login-copy .seller-back-link { @apply justify-self-start; }
 }
 @media (max-width: 760px) {
   .seller-main { @apply w-[calc(100%-32px)] pt-4; }
   .seller-subnav { @apply mb-[22px]; }
   .seller-heading { @apply my-5 block; }
   .seller-grid,.seller-metrics,.seller-metrics-four { @apply grid-cols-1 gap-[14px]; }
+  .seller-login-grid { @apply grid-cols-1 py-4; }
+  .seller-login-art { @apply min-h-[330px] p-7; }
   .seller-panel-heading { @apply items-start flex-col; }
   .seller-grid article,.seller-panel { @apply p-5; }
   .seller-button { @apply w-full; }
