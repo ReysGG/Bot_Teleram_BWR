@@ -1,7 +1,7 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest, type NextFetchEvent } from "next/server";
 
-export default clerkMiddleware((_auth, request) => {
+const customerMiddleware = clerkMiddleware((_auth, request) => {
   if (process.env.STOREFRONT_PREVIEW_READ_ONLY === "true" &&
       request.nextUrl.pathname.startsWith("/api/") &&
       !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
@@ -10,6 +10,16 @@ export default clerkMiddleware((_auth, request) => {
     });
   }
 });
+
+export default function proxy(request: NextRequest, event: NextFetchEvent) {
+  const pathname = request.nextUrl.pathname;
+  // Admin retains its signed server-side session and per-action origin checks.
+  // It must not depend on a customer Clerk key or customer preview flag.
+  if (pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/") || pathname === "/api/health") {
+    return NextResponse.next();
+  }
+  return customerMiddleware(request, event);
+}
 
 export const config = {
   matcher: [

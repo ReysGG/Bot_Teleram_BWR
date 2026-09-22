@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function SellerWithdrawalsPage() { return <section className="seller-panel"><div className="seller-panel-heading"><div><p className="seller-eyebrow">PAYOUT</p><h1>Penarikan</h1></div><Link className="seller-button" href="/seller/withdrawals/new">Ajukan penarikan</Link></div><div className="seller-empty"><strong>Belum ada permintaan penarikan</strong><p>Admin akan memeriksa dan mencatat transfer secara terpisah.</p></div></section>; }

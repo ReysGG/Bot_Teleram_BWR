@@ -1,0 +1,1339 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum BannedStockPolicy {
+  BLOCKED
+  ALLOW_HTTP_401
+  OWNER_APPROVAL
+  RELOGIN_REQUIRED
+}
+
+enum DigitalStockStatus {
+  AVAILABLE
+  RESERVED
+  DELIVERED
+  BANNED
+  DISABLED
+}
+
+enum StockHealthStatus {
+  UNKNOWN
+  HEALTHY
+  BANNED
+  ERROR
+}
+
+enum BotSessionState {
+  BROWSING
+  AWAITING_EMAIL
+  AWAITING_QUANTITY
+  AWAITING_PRODUCT_SEARCH
+  AWAITING_SMS_SEARCH
+  AWAITING_REFERRAL_CODE
+  AWAITING_REDEEM_UPLOAD
+  AWAITING_USDT_TX_HASH
+  AWAITING_BINANCE_ORDER_ID
+}
+
+enum AccountRedeemBatchStatus {
+  PROCESSING
+  SENT
+  FAILED
+  UNKNOWN
+}
+
+enum TelegramUpdateStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID_WAITING_STOCK
+  PAID
+  FULFILLING
+  COMPLETED
+  EXPIRED
+  CANCELLED
+  REFUNDED
+}
+
+enum OrderChannel {
+  TELEGRAM
+  WEB
+}
+
+enum WebContactType {
+  EMAIL
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  EXPIRED
+  FAILED
+}
+
+enum UsdtBep20AttemptStatus {
+  AWAITING_TX_HASH
+  VERIFYING
+  PENDING_CONFIRMATIONS
+  VERIFIED
+  CONFIRMED
+  REJECTED
+  EXPIRED
+}
+
+enum BinanceInternalPaymentStatus {
+  AWAITING_ORDER_ID
+  VERIFYING
+  VERIFIED
+  CONFIRMED
+  REJECTED
+  EXPIRED
+}
+
+enum BinanceInternalVerifierMode {
+  OFFICIAL_API
+  WEB_SESSION
+}
+
+enum BinanceWebSessionStatus {
+  PENDING_VALIDATION
+  ACTIVE
+  CHALLENGED
+  EXPIRED
+  ERROR
+  REVOKED
+}
+
+enum BinanceWebTransactionStatus {
+  RECEIVED
+  MATCHED
+  CONFIRMED
+  UNMATCHED
+  AMBIGUOUS
+  REJECTED
+}
+
+enum JagoTransferStatus {
+  AWAITING_TRANSFER
+  CONFIRMED
+  EXPIRED
+  CANCELLED
+}
+
+enum QrisInvoiceAttemptStatus {
+  AWAITING_PAYMENT
+  MATCHED
+  CONFIRMED
+  EXPIRED
+  CANCELLED
+}
+
+enum QrisInvoiceEvidenceMode {
+  ANDROID_NOTIFICATION
+  WEB_SESSION
+}
+
+enum ShopeePartnerSessionStatus {
+  PENDING_VALIDATION
+  ACTIVE
+  EXPIRED
+  REVOKED
+  ERROR
+}
+
+enum ShopeePartnerTransactionStatus {
+  RECEIVED
+  MATCHED
+  CONFIRMED
+  UNMATCHED
+  AMBIGUOUS
+  REJECTED
+}
+
+enum WalletTopupStatus {
+  PENDING
+  PAID
+  EXPIRED
+  FAILED
+}
+
+enum WalletTransactionType {
+  TOPUP_CREDIT
+  ADMIN_CREDIT
+  ADMIN_DEBIT
+  PURCHASE_DEBIT
+  PAYMENT_RELEASE_REFUND
+  DELIVERY_REFUND
+  STOCK_UNAVAILABLE_REFUND
+  PREORDER_CANCEL_REFUND
+  SMS_PURCHASE_DEBIT
+  SMS_PURCHASE_REFUND
+  REFERRAL_REWARD
+  REFERRAL_JOIN_BONUS
+}
+
+enum ReferralAttributionStatus {
+  REWARDED
+}
+
+enum SmsPoolCustomerOrderStatus {
+  PROCESSING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  FAILED
+}
+
+enum PaymentClaimStatus {
+  PENDING
+  REGISTERED
+  LOCAL_ONLY
+  CONFIRMED
+  EXPIRED
+  CANCELLED
+  FAILED
+}
+
+enum BridgeEventStatus {
+  RECEIVED
+  CONFIRMED
+  DUPLICATE
+  REJECTED
+}
+
+enum TelegramNotificationStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  MANUAL_REVIEW
+}
+
+enum DeliveryReceiptStatus {
+  READY
+  SENDING
+  SENT
+  FAILED
+  UNKNOWN
+}
+
+enum DeliveryChannel {
+  TELEGRAM
+  WEB
+}
+
+model Product {
+  id                         String                 @id @default(cuid())
+  sellerId                   String?
+  seller                     SellerAccount?         @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  groupId                    String?
+  group                      ProductGroup?          @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  slug                       String                 @unique
+  name                       String
+  variantLabel               String?
+  groupSortOrder             Int                    @default(0)
+  description                String                 @db.Text
+  descriptionEntities        Json                   @default("[]")
+  descriptionEn              String?                @db.Text
+  descriptionEntitiesEn      Json                   @default("[]")
+  price                      Int
+  imageUrl                   String?
+  attachmentOriginalFilename String?
+  attachmentMimeType         String?
+  attachmentEncryptedPayload String?                @db.Text
+  attachmentEncryptionIv     String?
+  attachmentEncryptionTag    String?
+  attachmentUpdatedAt        DateTime?
+  postDeliveryInstructions   String?                @db.Text
+  postDeliveryEntities       Json                   @default("[]")
+  redeemUrl                  String?
+  status                     ProductStatus          @default(ACTIVE)
+  bannedStockPolicy          BannedStockPolicy      @default(BLOCKED)
+  preorderEnabled            Boolean                @default(false)
+  preorderEtaText            String?
+  preorderLimit              Int?
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  stockItems                 DigitalStockItem[]
+  webCartItems               WebCartItem[]
+  orderItems                 OrderItem[]
+  notifications              TelegramNotification[]
+
+  @@index([groupId, status, groupSortOrder, createdAt])
+  @@index([status, createdAt])
+  @@index([bannedStockPolicy, status])
+  @@index([createdAt])
+}
+
+enum SellerStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+}
+
+model SellerAccount {
+  id            String @id @default(cuid())
+  slug          String @unique
+  displayName   String
+  status        SellerStatus @default(INVITED)
+  commissionBps Int @default(0)
+  policyVersion Int @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  memberships   SellerMembership[]
+  products      Product[]
+}
+
+model SellerMembership {
+  id          String @id @default(cuid())
+  sellerId    String @unique
+  seller      SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  clerkIssuer String
+  clerkUserId String
+  active      Boolean @default(true)
+  createdAt   DateTime @default(now())
+  @@unique([clerkIssuer, clerkUserId])
+}
+
+model ProductGroup {
+  id                    String        @id @default(cuid())
+  slug                  String        @unique
+  name                  String
+  description           String        @db.Text
+  descriptionEntities   Json          @default("[]")
+  descriptionEn         String?       @db.Text
+  descriptionEntitiesEn Json          @default("[]")
+  imageUrl              String?
+  status                ProductStatus @default(ACTIVE)
+  sortOrder             Int           @default(0)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  products              Product[]
+
+  @@index([status, sortOrder, createdAt])
+  @@index([createdAt])
+}
+
+model DigitalStockItem {
+  id                     String               @id @default(cuid())
+  productId              String
+  product                Product              @relation(fields: [productId], references: [id], onDelete: Restrict)
+  originalFilename       String
+  credentialFingerprint  String               @unique
+  encryptedPayload       String               @db.Text
+  encryptionIv           String
+  encryptionTag          String
+  status                 DigitalStockStatus   @default(AVAILABLE)
+  healthStatus           StockHealthStatus    @default(UNKNOWN)
+  healthHttpStatus       Int?
+  healthError            String?
+  quotaSnapshot          Json?
+  lastCheckedAt          DateTime?
+  bannedSaleApprovedAt   DateTime?
+  bannedSaleApprovedBy   String?
+  bannedSaleApprovalNote String?
+  reservedOrderId        String?
+  reservedAt             DateTime?
+  deliveredOrderId       String?
+  deliveredAt            DateTime?
+  archivedAt             DateTime?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  orderItem              OrderItem?
+  deliveryReceipt        SentDelivery?        @relation("DeliveredStock")
+  accountRedeemEvents    AccountRedeemEvent[]
+
+  @@index([productId, status, healthStatus])
+  @@index([productId, healthStatus, bannedSaleApprovedAt])
+  @@index([productId, createdAt])
+  @@index([archivedAt, status, createdAt])
+  @@index([reservedOrderId])
+  @@index([deliveredOrderId])
+}
+
+model BotSession {
+  chatId                   String          @id
+  state                    BotSessionState @default(BROWSING)
+  locale                   String          @default("id")
+  cart                     Json?
+  buyerEmail               String?
+  buyerUsername            String?
+  buyerDisplayName         String?
+  broadcastEnabled         Boolean         @default(true)
+  telegramReachable        Boolean         @default(true)
+  checkoutKey              String?
+  activeOrderId            String?
+  navigationMessageId      Int?
+  catalogSearchQuery       String?
+  smsSearchQuery           String?
+  lastInboundAt            DateTime        @default(now())
+  reengagementLastQueuedAt DateTime?
+  reengagementSequence     Int             @default(0)
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+
+  @@index([telegramReachable, lastInboundAt, reengagementSequence, chatId], map: "BotSession_reengagement_eligibility_idx")
+  @@index([reengagementLastQueuedAt, lastInboundAt])
+}
+
+model Wallet {
+  chatId           String                 @id
+  balance          Int                    @default(0)
+  buyerUsername    String?
+  buyerDisplayName String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  transactions     WalletTransaction[]
+  topups           WalletTopup[]
+  smsPoolOrders    SmsPoolCustomerOrder[]
+
+  @@index([balance, updatedAt])
+  @@index([buyerUsername])
+  @@index([updatedAt])
+}
+
+model SmsPoolCustomerOrder {
+  id                   String                     @id @default(cuid())
+  idempotencyKey       String                     @unique
+  chatId               String
+  wallet               Wallet                     @relation(fields: [chatId], references: [chatId], onDelete: Restrict)
+  buyerUsername        String?
+  buyerDisplayName     String?
+  providerOrderId      String?                    @unique
+  countryId            Int
+  countryName          String
+  countryCode          String?
+  serviceId            Int
+  serviceName          String
+  providerCostUsdCents Int
+  sellPrice            Int
+  phoneNumber          String?
+  otpCode              String?
+  fullCode             String?
+  providerStatus       String?
+  status               SmsPoolCustomerOrderStatus @default(PROCESSING)
+  expiresAt            DateTime?
+  completedAt          DateTime?
+  refundedAt           DateTime?
+  lastCheckedAt        DateTime?
+  failureReason        String?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+
+  @@index([chatId, createdAt])
+  @@index([status, expiresAt])
+  @@index([buyerUsername, createdAt])
+}
+
+model WalletTransaction {
+  id             String                @id @default(cuid())
+  walletChatId   String
+  wallet         Wallet                @relation(fields: [walletChatId], references: [chatId], onDelete: Restrict)
+  type           WalletTransactionType
+  amount         Int
+  balanceBefore  Int
+  balanceAfter   Int
+  idempotencyKey String                @unique
+  orderId        String?
+  order          Order?                @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  walletTopupId  String?
+  walletTopup    WalletTopup?          @relation(fields: [walletTopupId], references: [id], onDelete: Restrict)
+  note           String?
+  actor          String?
+  createdAt      DateTime              @default(now())
+
+  @@index([walletChatId, createdAt])
+  @@index([orderId])
+  @@index([walletTopupId])
+  @@index([type, createdAt])
+}
+
+model WalletTopup {
+  id                       String                  @id @default(cuid())
+  idempotencyKey           String                  @unique
+  invoiceNumber            String                  @unique
+  chatId                   String
+  wallet                   Wallet                  @relation(fields: [chatId], references: [chatId], onDelete: Restrict)
+  paymentMethod            String                  @default("DANA_RELAY")
+  baseAmount               Int
+  uniqueCode               Int
+  billedAmount             Int
+  status                   WalletTopupStatus       @default(PENDING)
+  verifiedBy               String?
+  verifiedAt               DateTime?
+  telegramInvoiceMessageId Int?
+  expiresAt                DateTime
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
+  bridgeClaim              BridgePaymentClaim?
+  jagoTransferAttempt      JagoWalletTopupAttempt?
+  qrisInvoiceAttempt       QrisInvoiceAttempt?
+  bridgeEvents             BridgePaymentEvent[]
+  notifications            TelegramNotification[]
+  transactions             WalletTransaction[]
+
+  @@index([chatId, createdAt])
+  @@index([status, uniqueCode, expiresAt])
+  @@index([status, billedAmount, expiresAt])
+  @@index([billedAmount, status, createdAt, expiresAt])
+  @@index([paymentMethod, status, billedAmount, expiresAt])
+  @@index([uniqueCode, expiresAt])
+  @@index([createdAt])
+}
+
+model JagoWalletTopupAttempt {
+  id                             String             @id @default(cuid())
+  walletTopupId                  String             @unique
+  walletTopup                    WalletTopup        @relation(fields: [walletTopupId], references: [id], onDelete: Restrict)
+  recipientAccountNumberSnapshot String
+  status                         JagoTransferStatus @default(AWAITING_TRANSFER)
+  matchedEventId                 String?            @unique
+  matchedAt                      DateTime?
+  expiresAt                      DateTime
+  createdAt                      DateTime           @default(now())
+  updatedAt                      DateTime           @updatedAt
+
+  @@index([status, expiresAt])
+  @@index([createdAt])
+}
+
+model TelegramProcessedUpdate {
+  updateId   BigInt               @id
+  chatId     String
+  status     TelegramUpdateStatus @default(PROCESSING)
+  attempts   Int                  @default(1)
+  leaseUntil DateTime
+  lastError  String?
+  expiresAt  DateTime
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+
+  @@index([status, leaseUntil])
+  @@index([expiresAt])
+}
+
+model Order {
+  id                            String                         @id @default(cuid())
+  idempotencyKey                String                         @unique
+  invoiceNumber                 String                         @unique
+  chatId                        String
+  channel                       OrderChannel                   @default(TELEGRAM)
+  webCustomerId                 String?
+  webCustomer                   WebCustomer?                   @relation(fields: [webCustomerId], references: [id], onDelete: Restrict)
+  buyerEmail                    String?
+  buyerUsername                 String?
+  buyerDisplayName              String?
+  subtotal                      Int
+  serviceFee                    Int
+  grandTotal                    Int
+  status                        OrderStatus                    @default(PENDING_PAYMENT)
+  paymentStatus                 PaymentStatus                  @default(PENDING)
+  isPreorder                    Boolean                        @default(false)
+  preorderEtaText               String?
+  waitingStockAt                DateTime?
+  expiresAt                     DateTime
+  stockReleasedAt               DateTime?
+  paidAt                        DateTime?
+  completedAt                   DateTime?
+  refundedAt                    DateTime?
+  createdAt                     DateTime                       @default(now())
+  updatedAt                     DateTime                       @updatedAt
+  items                         OrderItem[]
+  payment                       Payment?
+  usdtBep20Attempt              UsdtBep20Attempt?
+  binanceInternalPaymentAttempt BinanceInternalPaymentAttempt?
+  jagoTransferAttempt           JagoTransferAttempt?
+  qrisInvoiceAttempt            QrisInvoiceAttempt?
+  bridgeClaim                   BridgePaymentClaim?
+  bridgeEvents                  BridgePaymentEvent[]
+  notifications                 TelegramNotification[]
+  deliveryReceipts              SentDelivery[]
+  walletTransactions            WalletTransaction[]
+  accountRedeemEvents           AccountRedeemEvent[]
+
+  @@index([chatId, createdAt])
+  @@index([chatId, status, expiresAt])
+  @@index([webCustomerId, createdAt])
+  @@index([channel, status, createdAt])
+  @@index([buyerUsername, createdAt])
+  @@index([status, expiresAt])
+  @@index([paymentStatus, expiresAt])
+  @@index([isPreorder, status, paidAt])
+}
+
+model WebCustomer {
+  id                  String               @id @default(cuid())
+  contactType         WebContactType       @default(EMAIL)
+  contactLookupHash   String               @unique
+  contactMasked       String
+  passwordHash        String
+  clerkIssuer         String?
+  clerkUserId         String?
+  clerkLinkedAt       DateTime?
+  failedAttempts      Int                  @default(0)
+  lockedUntil         DateTime?
+  lastAuthenticatedAt DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  orders              Order[]
+  sessions            WebCustomerSession[]
+  cart                WebCart?
+
+  @@index([createdAt])
+  @@index([lockedUntil])
+  @@unique([clerkIssuer, clerkUserId])
+}
+
+model WebCustomerSession {
+  id            String      @id @default(cuid())
+  tokenHash     String      @unique
+  webCustomerId String
+  webCustomer   WebCustomer @relation(fields: [webCustomerId], references: [id], onDelete: Restrict)
+  userAgentHash String?
+  expiresAt     DateTime
+  lastUsedAt    DateTime    @default(now())
+  revokedAt     DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([webCustomerId, expiresAt])
+  @@index([expiresAt, revokedAt])
+}
+
+model WebCart {
+  webCustomerId String @id
+  webCustomer WebCustomer @relation(fields: [webCustomerId], references: [id], onDelete: Cascade)
+  revision Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items WebCartItem[]
+  mutations WebCartMutation[]
+}
+
+model WebCartItem {
+  id String @id @default(cuid())
+  webCustomerId String
+  cart WebCart @relation(fields: [webCustomerId], references: [webCustomerId], onDelete: Cascade)
+  productId String
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([webCustomerId, productId])
+  @@index([productId])
+}
+
+model WebCartMutation {
+  webCustomerId String
+  cart WebCart @relation(fields: [webCustomerId], references: [webCustomerId], onDelete: Cascade)
+  idempotencyKey String
+  payloadHash String
+  createdAt DateTime @default(now())
+  @@id([webCustomerId, idempotencyKey])
+  @@index([webCustomerId, createdAt])
+}
+
+model UsdtBep20Attempt {
+  id                            String                 @id @default(cuid())
+  orderId                       String                 @unique
+  order                         Order                  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  rateSnapshot                  Int
+  baseUsdtMicros                BigInt
+  uniqueMicros                  Int
+  expectedUsdtMicros            BigInt
+  expectedTokenUnits            Decimal                @db.Decimal(78, 0)
+  recipientAddressSnapshot      String
+  tokenContractSnapshot         String
+  tokenDecimalsSnapshot         Int
+  chainIdSnapshot               Int                    @default(56)
+  requiredConfirmationsSnapshot Int
+  status                        UsdtBep20AttemptStatus @default(AWAITING_TX_HASH)
+  txHash                        String?                @unique
+  transferLogIndex              Int?
+  blockNumber                   BigInt?
+  blockTimestamp                DateTime?
+  confirmations                 Int?
+  submittedAt                   DateTime?
+  lastCheckedAt                 DateTime?
+  verifiedAt                    DateTime?
+  confirmedAt                   DateTime?
+  failureReason                 String?                @db.Text
+  expiresAt                     DateTime
+  verificationExpiresAt         DateTime
+  createdAt                     DateTime               @default(now())
+  updatedAt                     DateTime               @updatedAt
+
+  @@index([status, lastCheckedAt])
+  @@index([status, expiresAt])
+  @@index([status, verificationExpiresAt])
+  @@index([expectedUsdtMicros, status])
+  @@index([createdAt])
+}
+
+model BinanceInternalPaymentAttempt {
+  id                                String                       @id @default(cuid())
+  orderId                           String                       @unique
+  order                             Order                        @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  rateSnapshot                      Int
+  baseUsdtMicros                    BigInt
+  uniqueMicros                      Int
+  expectedUsdtMicros                BigInt
+  recipientBinanceIdSnapshot        String
+  verifierMode                      BinanceInternalVerifierMode  @default(OFFICIAL_API)
+  binanceWebSessionIdSnapshot       String?
+  binanceWebSession                 BinanceWebSession?           @relation("BinanceAttemptWebSession", fields: [binanceWebSessionIdSnapshot], references: [id], onDelete: Restrict)
+  binanceAccountFingerprintSnapshot String?
+  status                            BinanceInternalPaymentStatus @default(AWAITING_ORDER_ID)
+  submittedOrderId                  String?                      @unique
+  canonicalTransactionId            String?                      @unique
+  observedAmount                    Decimal?                     @db.Decimal(36, 18)
+  observedCurrency                  String?
+  observedOrderType                 String?
+  observedProviderStatus            String?
+  observedWalletTypes               Json?
+  observedPayerName                 String?
+  observedReceiverBinanceId         String?
+  observedReceiverName              String?
+  observedTransactionTime           DateTime?
+  submittedAt                       DateTime?
+  lastCheckedAt                     DateTime?
+  verifiedAt                        DateTime?
+  confirmedAt                       DateTime?
+  failureReason                     String?                      @db.Text
+  expiresAt                         DateTime
+  verificationExpiresAt             DateTime
+  createdAt                         DateTime                     @default(now())
+  updatedAt                         DateTime                     @updatedAt
+  webTransaction                    BinanceWebTransaction?
+
+  @@index([status, lastCheckedAt])
+  @@index([status, expiresAt])
+  @@index([status, verificationExpiresAt])
+  @@index([expectedUsdtMicros, status])
+  @@index([verifierMode, status, lastCheckedAt], map: "BinanceAttempt_verifier_status_check_idx")
+  @@index([binanceAccountFingerprintSnapshot, expectedUsdtMicros, status], map: "BinanceAttempt_web_account_amount_idx")
+  @@index([createdAt])
+}
+
+model BinanceWebSession {
+  id                    String                          @id @default(cuid())
+  name                  String
+  encryptedCookieJar    String?                         @db.Text
+  cookieEncryptionIv    String?
+  cookieEncryptionTag   String?
+  cookieFingerprint     String?                         @unique
+  recipientBinanceId    String?
+  accountFingerprint    String?
+  status                BinanceWebSessionStatus         @default(PENDING_VALIDATION)
+  isPrimary             Boolean                         @default(false)
+  pollingLeaseToken     String?                         @unique
+  pollingLeaseExpiresAt DateTime?
+  pollCursorTime        BigInt?
+  lastValidatedAt       DateTime?
+  lastSuccessfulPollAt  DateTime?
+  lastErrorCode         String?
+  lastErrorAt           DateTime?
+  activatedAt           DateTime?
+  activatedBy           String?
+  revokedAt             DateTime?
+  revokedBy             String?
+  createdBy             String
+  updatedBy             String
+  createdAt             DateTime                        @default(now())
+  updatedAt             DateTime                        @updatedAt
+  transactions          BinanceWebTransaction[]
+  pollMetrics           BinanceWebPollMetric[]
+  invoiceAttempts       BinanceInternalPaymentAttempt[] @relation("BinanceAttemptWebSession")
+
+  @@index([status, isPrimary, pollingLeaseExpiresAt, lastSuccessfulPollAt], map: "BinanceWebSession_status_primary_poll_idx")
+  @@index([recipientBinanceId, status, isPrimary], map: "BinanceWebSession_recipient_status_idx")
+}
+
+model BinanceWebTransaction {
+  id                              String                         @id @default(cuid())
+  sessionId                       String
+  session                         BinanceWebSession              @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  accountFingerprint              String
+  providerTransactionId           String
+  providerOrderId                 String?
+  transactionType                 String?
+  direction                       String
+  providerStatus                  String
+  providerStatusDetail            String?
+  currency                        String
+  amountMicros                    BigInt
+  counterpartyName                String?
+  viaAccountValue                 String?
+  receiverBinanceId               String?
+  occurredAt                      DateTime
+  rawPayloadHash                  String
+  detailPayloadHash               String?
+  status                          BinanceWebTransactionStatus    @default(RECEIVED)
+  binanceInternalPaymentAttemptId String?                        @unique
+  binanceInternalPaymentAttempt   BinanceInternalPaymentAttempt? @relation(fields: [binanceInternalPaymentAttemptId], references: [id], onDelete: Restrict)
+  firstSeenAt                     DateTime                       @default(now())
+  confirmedAt                     DateTime?
+  rejectionReason                 String?
+  createdAt                       DateTime                       @default(now())
+  updatedAt                       DateTime                       @updatedAt
+
+  @@unique([accountFingerprint, providerTransactionId], map: "BinanceWebTransaction_account_provider_key")
+  @@index([sessionId, occurredAt], map: "BinanceWebTransaction_session_occurred_idx")
+  @@index([accountFingerprint, amountMicros, occurredAt], map: "BinanceWebTransaction_account_amount_time_idx")
+  @@index([providerOrderId], map: "BinanceWebTransaction_order_id_idx")
+  @@index([status, occurredAt], map: "BinanceWebTransaction_status_occurred_idx")
+}
+
+model BinanceWebPollMetric {
+  id               String            @id @default(cuid())
+  sessionId        String
+  session          BinanceWebSession @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  bucketStart      DateTime
+  runs             Int               @default(0)
+  successfulRuns   Int               @default(0)
+  failedRuns       Int               @default(0)
+  pages            Int               @default(0)
+  received         Int               @default(0)
+  detailCalls      Int               @default(0)
+  unauthorized     Int               @default(0)
+  rateLimited      Int               @default(0)
+  challenged       Int               @default(0)
+  contractUnknown  Int               @default(0)
+  accountMismatch  Int               @default(0)
+  identityUnproven Int               @default(0)
+  errors           Int               @default(0)
+  lastErrorCode    String?
+  lastErrorAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([sessionId, bucketStart], map: "BinanceWebPollMetric_session_bucket_key")
+  @@index([bucketStart], map: "BinanceWebPollMetric_bucket_idx")
+  @@index([sessionId, bucketStart], map: "BinanceWebPollMetric_session_bucket_idx")
+}
+
+model JagoTransferAttempt {
+  id                             String             @id @default(cuid())
+  orderId                        String             @unique
+  order                          Order              @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  recipientAccountNumberSnapshot String
+  status                         JagoTransferStatus @default(AWAITING_TRANSFER)
+  matchedEventId                 String?            @unique
+  matchedAt                      DateTime?
+  expiresAt                      DateTime
+  createdAt                      DateTime           @default(now())
+  updatedAt                      DateTime           @updatedAt
+
+  @@index([status, expiresAt])
+  @@index([createdAt])
+}
+
+model QrisMerchant {
+  id                       String               @id @default(cuid())
+  slug                     String               @unique
+  name                     String
+  providerKey              String
+  encryptedBasePayload     String               @db.Text
+  basePayloadEncryptionIv  String
+  basePayloadEncryptionTag String
+  payloadFingerprint       String
+  trustedDeviceId          String?
+  shopeeAccountFingerprint String?
+  enabled                  Boolean              @default(false)
+  isActive                 Boolean              @default(false)
+  activatedAt              DateTime?
+  activatedBy              String?
+  archivedAt               DateTime?
+  archivedBy               String?
+  createdBy                String
+  updatedBy                String
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
+  invoiceAttempts          QrisInvoiceAttempt[]
+
+  @@index([providerKey, enabled, archivedAt])
+  @@index([providerKey, shopeeAccountFingerprint], map: "QrisMerchant_provider_account_idx")
+  @@index([createdAt])
+}
+
+model QrisInvoiceAttempt {
+  id                               String                     @id @default(cuid())
+  orderId                          String?                    @unique
+  order                            Order?                     @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  walletTopupId                    String?                    @unique
+  walletTopup                      WalletTopup?               @relation(fields: [walletTopupId], references: [id], onDelete: Restrict)
+  qrisMerchantId                   String?
+  qrisMerchant                     QrisMerchant?              @relation(fields: [qrisMerchantId], references: [id], onDelete: Restrict)
+  merchantSlugSnapshot             String
+  merchantNameSnapshot             String
+  providerKeySnapshot              String
+  allowedPackageNamesSnapshot      String[]
+  allowedDeviceIdsSnapshot         String[]
+  encryptedBasePayloadSnapshot     String                     @db.Text
+  basePayloadEncryptionIvSnapshot  String
+  basePayloadEncryptionTagSnapshot String
+  amount                           Int
+  evidenceMode                     QrisInvoiceEvidenceMode    @default(ANDROID_NOTIFICATION)
+  status                           QrisInvoiceAttemptStatus   @default(AWAITING_PAYMENT)
+  matchedEventId                   String?                    @unique
+  matchedEvent                     BridgePaymentEvent?        @relation(fields: [matchedEventId], references: [id], onDelete: Restrict)
+  matchedAt                        DateTime?
+  expiresAt                        DateTime
+  createdAt                        DateTime                   @default(now())
+  updatedAt                        DateTime                   @updatedAt
+  shopeeSessionIdSnapshot          String?
+  shopeeAccountFingerprintSnapshot String?
+  shopeeTransactions               ShopeePartnerTransaction[]
+
+  @@index([qrisMerchantId, status, expiresAt], map: "QrisAttempt_merchant_status_expires_idx")
+  @@index([providerKeySnapshot, status, amount, expiresAt], map: "QrisAttempt_provider_status_amount_exp_idx")
+  @@index([shopeeAccountFingerprintSnapshot, status, amount, expiresAt], map: "QrisAttempt_shopee_account_status_amount_idx")
+  @@index([status, expiresAt], map: "QrisAttempt_status_expires_idx")
+  @@index([createdAt], map: "QrisAttempt_createdAt_idx")
+}
+
+model ShopeePartnerSession {
+  id                         String                     @id @default(cuid())
+  name                       String
+  encryptedCookieJar         String?                    @db.Text
+  cookieEncryptionIv         String?
+  cookieEncryptionTag        String?
+  cookieFingerprint          String?                    @unique
+  encryptedApiToken          String?                    @db.Text
+  apiTokenEncryptionIv       String?
+  apiTokenEncryptionTag      String?
+  apiTokenFingerprint        String?
+  merchantAccountFingerprint String?
+  merchantId                 String?
+  storeId                    String?
+  status                     ShopeePartnerSessionStatus @default(PENDING_VALIDATION)
+  pollingLeaseToken          String?                    @unique
+  pollingLeaseExpiresAt      DateTime?
+  pollWindowStartAt          DateTime?
+  pollCursor                 String?                    @db.Text
+  lastValidatedAt            DateTime?
+  lastSuccessfulPollAt       DateTime?
+  lastErrorCode              String?
+  lastErrorAt                DateTime?
+  revokedAt                  DateTime?
+  revokedBy                  String?
+  createdBy                  String
+  updatedBy                  String
+  createdAt                  DateTime                   @default(now())
+  updatedAt                  DateTime                   @updatedAt
+  transactions               ShopeePartnerTransaction[]
+
+  @@index([status, pollingLeaseExpiresAt, lastSuccessfulPollAt], map: "ShopeePartnerSession_status_lease_poll_idx")
+}
+
+model ShopeePartnerTransaction {
+  id                            String                         @id @default(cuid())
+  sessionId                     String
+  session                       ShopeePartnerSession           @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  merchantAccountFingerprint    String
+  externalTransactionId         String
+  merchantExternalTransactionId String
+  merchantId                    String
+  storeId                       String
+  service                       Int
+  transactionType               Int
+  statusCode                    Int
+  amount                        Int
+  occurredAt                    DateTime
+  rawPayloadHash                String
+  status                        ShopeePartnerTransactionStatus @default(RECEIVED)
+  qrisInvoiceAttemptId          String?                        @unique
+  qrisInvoiceAttempt            QrisInvoiceAttempt?            @relation(fields: [qrisInvoiceAttemptId], references: [id], onDelete: Restrict)
+  firstSeenAt                   DateTime                       @default(now())
+  confirmedAt                   DateTime?
+  rejectionReason               String?
+  createdAt                     DateTime                       @default(now())
+  updatedAt                     DateTime                       @updatedAt
+
+  @@unique([merchantAccountFingerprint, externalTransactionId], map: "ShopeePartnerTransaction_account_external_key")
+  @@index([status, occurredAt])
+  @@index([sessionId, occurredAt])
+  @@index([qrisInvoiceAttemptId])
+}
+
+model OrderItem {
+  id                       String            @id @default(cuid())
+  orderId                  String
+  order                    Order             @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  productId                String
+  product                  Product           @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productNameSnapshot      String
+  productGroupIdSnapshot   String?
+  productGroupNameSnapshot String?
+  variantLabelSnapshot     String?
+  unitPrice                Int
+  quantity                 Int               @default(1)
+  stockItemId              String?           @unique
+  stockItem                DigitalStockItem? @relation(fields: [stockItemId], references: [id], onDelete: Restrict)
+  createdAt                DateTime          @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([productGroupIdSnapshot])
+}
+
+model Payment {
+  id                       String        @id @default(cuid())
+  orderId                  String        @unique
+  order                    Order         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  invoiceNumber            String        @unique
+  method                   String        @default("DANA_RELAY")
+  billedAmount             Int
+  uniqueCode               Int?
+  status                   PaymentStatus @default(PENDING)
+  verifiedBy               String?
+  verifiedAt               DateTime?
+  telegramInvoiceMessageId Int?
+  expiresAt                DateTime
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+
+  @@index([status, billedAmount, expiresAt])
+  @@index([billedAmount, status, createdAt, expiresAt])
+  @@index([uniqueCode, expiresAt])
+}
+
+model BridgePaymentClaim {
+  id            String             @id @default(cuid())
+  claimId       String             @unique
+  orderId       String?            @unique
+  order         Order?             @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  walletTopupId String?            @unique
+  walletTopup   WalletTopup?       @relation(fields: [walletTopupId], references: [id], onDelete: Restrict)
+  amount        Int
+  status        PaymentClaimStatus @default(PENDING)
+  registeredAt  DateTime?
+  confirmedAt   DateTime?
+  expiresAt     DateTime
+  lastError     String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([status, amount, expiresAt])
+}
+
+model BridgePaymentEvent {
+  id                 String              @id @default(cuid())
+  eventId            String              @unique
+  source             String              @default("RELAY")
+  provider           String?
+  claimId            String?
+  deviceId           String?
+  packageName        String?
+  orderId            String?
+  order              Order?              @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  walletTopupId      String?
+  walletTopup        WalletTopup?        @relation(fields: [walletTopupId], references: [id], onDelete: Restrict)
+  qrisInvoiceAttempt QrisInvoiceAttempt?
+  amount             Int?
+  postedAt           DateTime
+  receivedAt         DateTime            @default(now())
+  status             BridgeEventStatus   @default(RECEIVED)
+  payloadHash        String
+  reason             String?
+  confirmedAt        DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([claimId])
+  @@index([source, deviceId, receivedAt])
+  @@index([provider, status, postedAt])
+  @@index([status, postedAt])
+  @@index([orderId])
+  @@index([walletTopupId])
+}
+
+model BridgeDeviceStatus {
+  deviceId            String    @id
+  source              String    @default("ANDROID")
+  queueSize           Int
+  pendingQueueSize    Int       @default(0)
+  blockedQueueSize    Int       @default(0)
+  oldestQueuedAt      DateTime?
+  highestAttemptCount Int       @default(0)
+  lastErrorCode       String?
+  appVersion          String?
+  appVersionCode      Int?
+  listenerConnected   Boolean?
+  queueStorageVersion Int?
+  lastSeenAt          DateTime  @default(now())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([source, lastSeenAt])
+}
+
+model StoreRuntimeSetting {
+  id                                String    @id
+  maintenanceMode                   Boolean   @default(false)
+  maintenanceMessage                String?   @db.Text
+  qrisDanaEnabled                   Boolean   @default(true)
+  legacyQrisFallbackEnabled         Boolean   @default(true)
+  legacyQrisFallbackUpdatedBy       String?
+  legacyQrisFallbackUpdatedAt       DateTime?
+  walletCheckoutEnabled             Boolean   @default(true)
+  mixedWalletQrisEnabled            Boolean   @default(true)
+  walletTopupEnabled                Boolean   @default(true)
+  paymentMethodsUpdatedBy           String?
+  paymentMethodsUpdatedAt           DateTime?
+  usdtIdrRate                       Int       @default(18500)
+  usdtIdrRateSource                 String    @default("ADMIN_MANUAL")
+  usdtIdrRateUpdatedBy              String?
+  usdtIdrRateUpdatedAt              DateTime?
+  usdtBep20Enabled                  Boolean   @default(false)
+  usdtBep20RecipientAddress         String?
+  usdtBep20TokenContract            String    @default("0x55d398326f99059ff775485246999027b3197955")
+  usdtBep20TokenDecimals            Int       @default(18)
+  usdtBep20RequiredConfirmations    Int       @default(12)
+  usdtBep20UpdatedBy                String?
+  usdtBep20UpdatedAt                DateTime?
+  binanceInternalEnabled            Boolean   @default(false)
+  binanceInternalRecipientId        String?
+  binanceInternalUpdatedBy          String?
+  binanceInternalUpdatedAt          DateTime?
+  jagoTransferEnabled               Boolean   @default(false)
+  jagoTransferAccountNumber         String?
+  jagoTransferUpdatedBy             String?
+  jagoTransferUpdatedAt             DateTime?
+  accountRedeemDescription          String?   @db.Text
+  accountRedeemDescriptionUpdatedBy String?
+  accountRedeemDescriptionUpdatedAt DateTime?
+  reengagementEnabled               Boolean   @default(false)
+  reengagementBuyerInactiveDays     Int       @default(30)
+  reengagementNonBuyerInactiveDays  Int       @default(7)
+  reengagementCooldownDays          Int       @default(14)
+  reengagementMaxMessages           Int       @default(3)
+  reengagementBatchSize             Int       @default(50)
+  reengagementBuyerMessage          String?   @db.Text
+  reengagementNonBuyerMessage       String?   @db.Text
+  reengagementUpdatedBy             String?
+  reengagementUpdatedAt             DateTime?
+  telegramChatgptCustomEmojiId      String?
+  telegramClaudeCustomEmojiId       String?
+  telegramCustomEmojiMap            Json?
+  telegramCustomEmojiUpdatedBy      String?
+  telegramCustomEmojiUpdatedAt      DateTime?
+  updatedBy                         String?
+  createdAt                         DateTime  @default(now())
+  updatedAt                         DateTime  @updatedAt
+}
+
+model ReferralProgramSetting {
+  id                   String   @id
+  enabled              Boolean  @default(false)
+  pointsPerJoin        Int      @default(1)
+  claimThresholdPoints Int      @default(10)
+  claimRewardAmount    Int      @default(0)
+  newUserReward        Int      @default(0)
+  updatedBy            String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model ReferralCode {
+  id                 String                @id @default(cuid())
+  ownerChatId        String                @unique
+  code               String                @unique
+  ownerUsername      String?
+  ownerDisplayName   String?
+  pointBalance       Int                   @default(0)
+  totalPointsEarned  Int                   @default(0)
+  totalPointsClaimed Int                   @default(0)
+  totalRewardClaimed Int                   @default(0)
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  attributions       ReferralAttribution[]
+  claims             ReferralClaim[]
+
+  @@index([createdAt])
+}
+
+model ReferralAttribution {
+  id                   String                    @id @default(cuid())
+  referralCodeId       String
+  referralCode         ReferralCode              @relation(fields: [referralCodeId], references: [id], onDelete: Restrict)
+  referralCodeSnapshot String
+  referrerChatId       String
+  referredChatId       String                    @unique
+  referredUsername     String?
+  referredDisplayName  String?
+  pointsAwarded        Int
+  newUserReward        Int
+  status               ReferralAttributionStatus @default(REWARDED)
+  rewardedAt           DateTime                  @default(now())
+  createdAt            DateTime                  @default(now())
+
+  @@index([referrerChatId, createdAt])
+  @@index([referralCodeId, createdAt])
+  @@index([createdAt])
+}
+
+model ReferralClaim {
+  id             String       @id @default(cuid())
+  referralCodeId String
+  referralCode   ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Restrict)
+  ownerChatId    String
+  pointsSpent    Int
+  rewardAmount   Int
+  idempotencyKey String       @unique
+  createdAt      DateTime     @default(now())
+
+  @@index([ownerChatId, createdAt])
+  @@index([referralCodeId, createdAt])
+}
+
+model TelegramNotification {
+  id            String                     @id @default(cuid())
+  dedupeKey     String                     @unique
+  chatId        String
+  orderId       String?
+  order         Order?                     @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  productId     String?
+  product       Product?                   @relation(fields: [productId], references: [id], onDelete: Restrict)
+  walletTopupId String?
+  walletTopup   WalletTopup?               @relation(fields: [walletTopupId], references: [id], onDelete: Restrict)
+  broadcastId   String?
+  broadcast     AdminBroadcast?            @relation(fields: [broadcastId], references: [id], onDelete: Restrict)
+  stockItemId   String?
+  kind          String
+  messageText   String?                    @db.Text
+  priority      Int                        @default(100)
+  status        TelegramNotificationStatus @default(PENDING)
+  attempts      Int                        @default(0)
+  nextAttemptAt DateTime                   @default(now())
+  leaseUntil    DateTime?
+  lastError     String?
+  sentAt        DateTime?
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([status, priority, nextAttemptAt])
+  @@index([chatId, kind, status, createdAt])
+  @@index([kind, status, sentAt])
+  @@index([orderId])
+  @@index([productId])
+  @@index([walletTopupId])
+  @@index([broadcastId, status])
+}
+
+model AdminBroadcast {
+  id              String                 @id @default(cuid())
+  title           String
+  messageText     String                 @db.Text
+  messageEntities Json                   @default("[]")
+  createdBy       String
+  recipientCount  Int
+  createdAt       DateTime               @default(now())
+  notifications   TelegramNotification[]
+
+  @@index([createdAt])
+}
+
+model SentDelivery {
+  id                String                @id @default(cuid())
+  dedupeKey         String                @unique
+  orderId           String
+  order             Order                 @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  stockItemId       String                @unique
+  stockItem         DigitalStockItem      @relation("DeliveredStock", fields: [stockItemId], references: [id], onDelete: Restrict)
+  chatId            String
+  channel           DeliveryChannel       @default(TELEGRAM)
+  status            DeliveryReceiptStatus @default(SENDING)
+  telegramMessageId String?
+  downloadCount     Int                   @default(0)
+  lastDownloadedAt  DateTime?
+  lastError         String?
+  sentAt            DateTime?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+
+  @@index([orderId])
+  @@index([status, createdAt])
+  @@index([channel, status, createdAt])
+  @@index([chatId, telegramMessageId])
+}
+
+model AccountLoginCredential {
+  id                 String               @id @default(cuid())
+  emailHash          String               @unique
+  tokenHash          String               @unique
+  emailMasked        String
+  contentFingerprint String
+  encryptedPayload   String               @db.Text
+  encryptionIv       String
+  encryptionTag      String
+  sourceFilename     String
+  importedBy         String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  redeemEvents       AccountRedeemEvent[]
+
+  @@index([updatedAt])
+}
+
+model AccountRedeemBatch {
+  id                String                   @id
+  chatId            String
+  inputCount        Int
+  matchedCount      Int
+  unmatchedCount    Int
+  invalidCount      Int
+  status            AccountRedeemBatchStatus @default(PROCESSING)
+  telegramMessageId String?
+  lastError         String?
+  sentAt            DateTime?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  events            AccountRedeemEvent[]
+
+  @@index([chatId, createdAt])
+  @@index([status, createdAt])
+}
+
+model AccountRedeemEvent {
+  id                String                 @id @default(cuid())
+  batchId           String
+  batch             AccountRedeemBatch     @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  chatId            String
+  stockItemId       String
+  stockItem         DigitalStockItem       @relation(fields: [stockItemId], references: [id], onDelete: Restrict)
+  orderId           String
+  order             Order                  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  loginCredentialId String
+  loginCredential   AccountLoginCredential @relation(fields: [loginCredentialId], references: [id], onDelete: Restrict)
+  position          Int
+  createdAt         DateTime               @default(now())
+
+  @@unique([batchId, stockItemId])
+  @@index([chatId, createdAt])
+  @@index([stockItemId, createdAt])
+  @@index([orderId])
+  @@index([loginCredentialId, createdAt])
+}

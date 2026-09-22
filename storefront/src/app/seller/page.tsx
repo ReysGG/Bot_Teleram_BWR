@@ -1,0 +1,5 @@
+import Link from "next/link";
+
+export default function SellerPage() {
+  return <><header className="seller-heading"><p className="seller-eyebrow">PORTAL SELLER</p><h1>Bangun toko digitalmu.</h1><p>Kelola produk, stok, penjualan, dan pengajuan saldo dari satu ruang kerja.</p></header><section className="seller-grid"><article><strong>Produk saya</strong><span>Draft, revisi, dan stok milikmu akan tampil di sini.</span><Link href="/seller/products">Buka produk</Link></article><article><strong>Penjualan</strong><span>Lihat unit terjual dan pendapatan yang masih ditahan.</span><Link href="/seller/sales">Lihat penjualan</Link></article><article><strong>Saldo</strong><span>Saldo tersedia dan status penarikan ditampilkan terpisah.</span><Link href="/seller/balance">Buka saldo</Link></article></section><div className="seller-notice"><strong>Akses seller membutuhkan undangan admin.</strong><p>Portal ini sudah tersedia di lingkungan lokal. Produk baru masuk review sebelum dipublikasikan.</p></div></>;
+}

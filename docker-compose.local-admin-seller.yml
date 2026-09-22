@@ -70,6 +70,7 @@ services:
     logging: *local-logging
 
   bot:
+    profiles: [testing-bot]
     image: node:24-alpine
     env_file: [.env.local.admin-seller]
     environment:

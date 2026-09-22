@@ -10,6 +10,7 @@ coverage/
 !.env.docker.example
 
 src/generated/prisma/
+storefront/src/generated/prisma/
 
 # Credential inventory must only enter the encrypted admin import flow.
 *.9router.json

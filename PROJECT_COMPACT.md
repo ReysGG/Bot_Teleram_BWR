@@ -1,5 +1,14 @@
 # Independent Telegram Store - Compact Knowledge Base
 
+## Mandatory bot isolation — 2026-09-22
+
+`@K12JsonStockBot` / bot ID `8875520688` is PRODUCTION, never a testing bot.
+An earlier setup mistakenly copied its token to the ignored local environment
+and started a poller. That was not creation of a testing bot. The local token
+has been cleared. Local Telegram must stay disabled until a distinct testing bot
+is verified. Do not alter the production webhook or use production credentials
+in local workers. Current admin/seller work is local-only.
+
 ## Local draft: 2026-09-21 SMS OTP website
 
 Website SMSPool purchase/history/detail routes and verified web-wallet ownership

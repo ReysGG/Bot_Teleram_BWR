@@ -1,0 +1,1 @@
+export default function SellerSalesPage() { return <section className="seller-panel"><p className="seller-eyebrow">LAPORAN</p><h1>Penjualan</h1><div className="seller-empty"><strong>Belum ada penjualan seller</strong><p>Penjualan akan muncul setelah produk disetujui dan order berhasil dipenuhi.</p></div></section>; }

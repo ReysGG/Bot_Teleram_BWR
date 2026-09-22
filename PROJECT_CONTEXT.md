@@ -1,5 +1,15 @@
 # Project Context: Fully Independent Telegram Store
 
+## Correction: production bot identification (2026-09-22)
+
+The user explicitly confirmed `@K12JsonStockBot` (ID `8875520688`) is the
+production bot. The previous claim that a new testing bot was created was wrong:
+an existing BotFather message was read and its production token was mistakenly
+placed in a local environment. The local token was cleared; no production webhook
+change is established by that operation. Do not infer no impact solely from a
+healthy container. Dedicated testing credentials must be verified separately,
+and local workers/pollers must never fall back to this production bot.
+
 ## User Goal
 
 Create a fully independent Telegram commerce project at:

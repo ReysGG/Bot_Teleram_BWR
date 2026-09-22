@@ -1,0 +1,1 @@
+export default function NewWithdrawalPage() { return <section className="seller-panel"><p className="seller-eyebrow">PAYOUT REQUEST</p><h1>Ajukan penarikan</h1><div className="seller-notice"><strong>Belum tersedia untuk seller ini.</strong><p>Saldo ditahan secara atomik setelah membership, rekening, dan saldo tersedia aktif.</p></div></section>; }

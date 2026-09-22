@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function SellerProductsPage() { return <section className="seller-panel"><div className="seller-panel-heading"><div><p className="seller-eyebrow">KATALOG MILIKMU</p><h1>Produk saya</h1></div><Link className="seller-button" href="/seller/products/new">Buat draft</Link></div><div className="seller-empty"><strong>Belum ada produk seller</strong><p>Buat draft produk pertama. Admin akan meninjau sebelum produk tayang.</p></div></section>; }

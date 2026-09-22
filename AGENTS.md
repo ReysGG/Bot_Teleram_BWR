@@ -1,5 +1,14 @@
 # Independent Telegram Store - Agent Instructions
 
+## Production bot boundary — explicit user instruction, 2026-09-22
+
+- `@K12JsonStockBot` (Telegram bot ID `8875520688`) is the PRODUCTION bot.
+- Never use its token in local/test environments, polling runners, fixtures,
+  test webhook configuration, or test messages. Never change its webhook for testing.
+- Create and verify a separate test bot before enabling any local Telegram sender
+  or poller. Empty test credentials must fail closed; never fall back to production.
+- No production deployment is authorized for the current local admin/seller work.
+
 ## Required Reading
 
 Before changing code in this workspace, read these files completely:
