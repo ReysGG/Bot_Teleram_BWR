@@ -3,7 +3,6 @@ import { Clock3, MessageCircleMore, Megaphone, Send, UsersRound } from "lucide-r
 import { AdminPagination } from "@/components/admin/admin-pagination";
 import { AdminResultModal } from "@/components/admin/admin-result-modal";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { BroadcastComposer } from "@/components/admin/broadcast-composer";
 import { getAdminInventoryCounts } from "@/server/admin/inventory";
 import { adminPagination, parseAdminPage } from "@/server/admin/pagination";
 import { prisma } from "@/server/db/prisma";
@@ -105,7 +104,9 @@ export default async function BroadcastsPage({
           </p>
         </div>
         <div className="admin-modal-actions">
-          <BroadcastComposer subscriberCount={subscriberCount} />
+          <Link className="button button-primary" href="/admin/broadcasts/new" prefetch={false}>
+            <Megaphone aria-hidden="true" size={18} /> Buat pengumuman
+          </Link>
           <Link className="button button-ghost" href="/admin/broadcasts/reengagement" prefetch={false}>
             <MessageCircleMore aria-hidden="true" size={18} /> Atur win-back otomatis
           </Link>
