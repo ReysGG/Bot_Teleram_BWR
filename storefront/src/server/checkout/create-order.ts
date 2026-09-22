@@ -250,6 +250,7 @@ export async function createDigitalOrder(input: {
       },
       include: {
         group: { select: { id: true, name: true } },
+        seller: { select: { id: true, commissionBps: true, status: true } },
       },
     });
     if (!product) throw new Error("Product is unavailable");
@@ -499,6 +500,9 @@ export async function createDigitalOrder(input: {
             productGroupIdSnapshot: product.group?.id ?? null,
             productGroupNameSnapshot: product.group?.name ?? null,
             variantLabelSnapshot: product.variantLabel,
+            sellerIdSnapshot: product.sellerId,
+            sellerCommissionBpsSnapshot: product.sellerId ? (product.seller?.commissionBps ?? 0) : null,
+            sellerHoldSecondsSnapshot: product.sellerId ? 172800 : null,
             unitPrice: product.price,
             quantity: 1,
             stockItemId: reservedStock[index]?.id,

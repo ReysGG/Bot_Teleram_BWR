@@ -1,0 +1,14 @@
+.admin-content .seller-admin-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.admin-content .seller-admin-actions .button{text-decoration:none}
+.admin-content .seller-table-wrap{overflow-x:auto}
+.admin-content .seller-table{width:100%;min-width:720px;border-collapse:collapse;text-align:left;font-size:.82rem}
+.admin-content .seller-table th{padding:12px;border-bottom:1px solid var(--line);color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+.admin-content .seller-table td{padding:15px 12px;border-bottom:1px solid #edf1f7;color:var(--navy-soft);vertical-align:top}
+.admin-content .seller-table td strong,.admin-content .seller-table td small{display:block}
+.admin-content .seller-table td small{margin-top:4px;color:var(--muted);font-size:.72rem}
+.admin-content .seller-status{display:inline-flex;align-items:center;border:1px solid #cbdcf5;border-radius:999px;padding:4px 8px;background:#f3f7ff;color:var(--blue);font-size:.68rem;font-weight:900;letter-spacing:.06em}
+.admin-content .seller-empty{border:1px dashed #b8cff3;border-radius:15px;padding:52px 20px;background:var(--sky);text-align:center}
+.admin-content .seller-empty p{color:var(--muted);line-height:1.6}
+.admin-content .seller-muted{color:var(--muted);line-height:1.6}
+.admin-content .seller-admin-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.admin-content .seller-admin-list li{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface);font-size:.8rem}

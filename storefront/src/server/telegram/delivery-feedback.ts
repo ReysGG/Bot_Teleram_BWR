@@ -85,8 +85,32 @@ export async function acknowledgeOrderDelivery(input: {
         messageText: `Laporan file ${order.invoiceNumber} diselesaikan oleh konfirmasi pembeli.`,
       },
     });
+    await releaseSellerEarningsAfterApproval(tx, order.id, `buyer:${input.chatId}`);
     return acknowledgement;
   });
+}
+
+/** Buyer approval is the settlement gate. A rating is optional and separate. */
+export async function releaseSellerEarningsAfterApproval(
+  tx: Prisma.TransactionClient,
+  orderId: string,
+  actor: string,
+) {
+  const items = await tx.orderItem.findMany({
+    where: { orderId, sellerIdSnapshot: { not: null } },
+    select: { id: true, sellerIdSnapshot: true, sellerCommissionBpsSnapshot: true, unitPrice: true, sellerHoldSecondsSnapshot: true },
+  });
+  for (const item of items) {
+    if (!item.sellerIdSnapshot) continue;
+    const existing = await tx.sellerSale.findUnique({ where: { orderItemId: item.id } });
+    if (existing?.status === "AVAILABLE" || existing?.status === "PAID") continue;
+    const commission = Math.floor(item.unitPrice * (item.sellerCommissionBpsSnapshot ?? 0) / 10000);
+    const net = item.unitPrice - commission;
+    const sale = existing ?? await tx.sellerSale.create({ data: { sellerId: item.sellerIdSnapshot, orderItemId: item.id, gross: item.unitPrice, commission, net, holdSeconds: item.sellerHoldSecondsSnapshot ?? 0, status: "PENDING" } });
+    await tx.sellerSale.update({ where: { id: sale.id }, data: { status: "AVAILABLE", eligibleAt: new Date() } });
+    await tx.sellerWallet.upsert({ where: { sellerId: item.sellerIdSnapshot }, create: { sellerId: item.sellerIdSnapshot, available: net }, update: { available: { increment: net } } });
+    try { await tx.sellerJournal.create({ data: { sellerId: item.sellerIdSnapshot, sourceKey: `seller-release:order-item:${item.id}`, kind: "BUYER_APPROVED_USABLE", available: net, actor, reason: `Buyer approved usable delivery for order ${orderId}` } }); } catch (error) { if (!(error instanceof Error && error.message.includes("Unique"))) throw error; }
+  }
 }
 
 export async function reportMissingOrderDelivery(input: {

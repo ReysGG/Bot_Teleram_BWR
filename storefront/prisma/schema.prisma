@@ -306,6 +306,120 @@ model SellerAccount {
   products      Product[]
   ratings       SellerRating[]
   drafts        SellerProductDraft[]
+  invitations   SellerInvitation[]
+  payoutAccounts SellerPayoutAccount[]
+  withdrawals   SellerWithdrawal[]
+  journals      SellerJournal[]
+  sales         SellerSale[]
+  audit         SellerAudit[]
+  wallet        SellerWallet?
+}
+
+model SellerInvitation {
+  id String @id @default(cuid())
+  sellerId String
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  tokenHash String @unique
+  emailHash String
+  expiresAt DateTime
+  acceptedAt DateTime?
+  createdBy String
+  createdAt DateTime @default(now())
+  @@index([sellerId, expiresAt])
+}
+
+model SellerWallet {
+  sellerId String @id
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  pending BigInt @default(0)
+  available BigInt @default(0)
+  held BigInt @default(0)
+  debt BigInt @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+model SellerJournal {
+  id String @id @default(cuid())
+  sellerId String
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  sourceKey String @unique
+  kind String
+  pending BigInt @default(0)
+  available BigInt @default(0)
+  held BigInt @default(0)
+  debt BigInt @default(0)
+  clearing BigInt @default(0)
+  actor String
+  reason String
+  createdAt DateTime @default(now())
+  @@index([sellerId, createdAt])
+}
+
+model SellerPayoutAccount {
+  id String @id @default(cuid())
+  sellerId String
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  bank String
+  holder String
+  masked String
+  encryptedPayload String @db.Text
+  encryptionIv String
+  encryptionTag String
+  status String @default("PENDING")
+  verifiedAt DateTime?
+  createdAt DateTime @default(now())
+  withdrawals SellerWithdrawal[]
+  @@index([sellerId, status])
+}
+
+model SellerWithdrawal {
+  id String @id @default(cuid())
+  sellerId String
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  accountId String
+  account SellerPayoutAccount @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  amount BigInt
+  status String @default("REQUESTED")
+  requestKey String
+  version Int @default(1)
+  operator String?
+  reference String? @unique
+  reason String?
+  paidAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([sellerId, requestKey])
+  @@index([sellerId, createdAt])
+  @@index([status, createdAt])
+}
+
+model SellerSale {
+  id String @id @default(cuid())
+  sellerId String
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  orderItemId String @unique
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  gross BigInt
+  commission BigInt
+  net BigInt
+  status String @default("PENDING")
+  holdSeconds Int
+  eligibleAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([sellerId, status, createdAt])
+}
+
+model SellerAudit {
+  id String @id @default(cuid())
+  sellerId String
+  seller SellerAccount @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+  actor String
+  action String
+  target String
+  detail String
+  createdAt DateTime @default(now())
+  @@index([sellerId, createdAt])
 }
 
 enum SellerDraftStatus {
@@ -327,6 +441,7 @@ model SellerProductDraft {
   reviewReason String?
   reviewedBy  String?
   publishedProductId String? @unique
+  targetProductId String?
   requestKey  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -1049,6 +1164,9 @@ model OrderItem {
   product                  Product           @relation(fields: [productId], references: [id], onDelete: Restrict)
   productNameSnapshot      String
   sellerIdSnapshot         String?
+  sellerCommissionBpsSnapshot Int?
+  sellerHoldSecondsSnapshot Int?
+  sellerSale               SellerSale?
   productGroupIdSnapshot   String?
   productGroupNameSnapshot String?
   variantLabelSnapshot     String?
