@@ -29,7 +29,7 @@ export function AdminShell({
   children: ReactNode;
 }) {
   return (
-    <><SiteHeader active="account" /><main className="admin-layout">
+    <><SiteHeader mode="management" /><main className="admin-layout">
       <AdminSearchNavigation />
       <AdminSidebar active={active} counts={counts} email={email} />
 
