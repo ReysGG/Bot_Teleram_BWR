@@ -60,6 +60,7 @@
   .seller-upload-card { @apply mt-6 rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-5; }
   .seller-upload-card .stock-upload-form { @apply grid gap-4; }
   .seller-upload-card .stock-upload-form .button-light { @apply border-0 bg-[var(--blue)] text-white; }
+  .seller-invite-link { @apply block overflow-auto rounded-xl border border-[var(--line)] bg-white p-3 text-[.75rem] text-[var(--navy)] break-all; }
   .seller-login-grid { @apply grid grid-cols-[1.1fr_.9fr] items-stretch gap-6 py-8; }
   .seller-login-grid > .seller-panel { @apply self-center; }
   .seller-login-art { @apply relative grid min-h-[480px] content-between overflow-hidden rounded-[24px] border border-[#cfe0fb] bg-[linear-gradient(145deg,#0e2857_0%,#1d6dff_72%,#8bb8ff_100%)] p-10 text-white shadow-[var(--shadow)]; }
