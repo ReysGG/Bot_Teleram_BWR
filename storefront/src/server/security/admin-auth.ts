@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { adminChatIds, appUrl, requireEnv } from "@/server/env";
 import { hmacHex, safeEqual } from "@/server/security/crypto";
+import { isLocalPreview } from "@/lib/runtime-env";
 
 export const ADMIN_SESSION_COOKIE = "telegram_store_admin";
 const SESSION_TTL_SECONDS = 12 * 60 * 60;
@@ -76,6 +77,7 @@ export async function verifyAdminPassword(
 }
 
 export async function requireAdminPage(): Promise<AdminSession> {
+  if (isLocalPreview()) return { email: process.env.ADMIN_EMAIL?.trim() || "local-admin@example.test", expiresAt: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS, passwordVersion: "local-preview" };
   const cookieStore = await cookies();
   const session = verifyAdminSessionToken(
     cookieStore.get(ADMIN_SESSION_COOKIE)?.value,
@@ -85,6 +87,7 @@ export async function requireAdminPage(): Promise<AdminSession> {
 }
 
 export function requireAdminRequest(request: NextRequest): AdminSession {
+  if (isLocalPreview()) return { email: process.env.ADMIN_EMAIL?.trim() || "local-admin@example.test", expiresAt: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS, passwordVersion: "local-preview" };
   const session = verifyAdminSessionToken(
     request.cookies.get(ADMIN_SESSION_COOKIE)?.value,
   );

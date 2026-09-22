@@ -1,8 +1,23 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/server/db/prisma";
 import { redirect } from "next/navigation";
+import { isLocalPreview } from "@/lib/runtime-env";
+
+async function localPreviewSeller() {
+  return prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('local-preview-seller'))`;
+    const seller = await tx.sellerAccount.upsert({
+      where: { slug: "local-preview-seller" },
+      create: { slug: "local-preview-seller", displayName: "Local Preview Seller", status: "ACTIVE" },
+      update: { status: "ACTIVE" },
+    });
+    await tx.sellerWallet.upsert({ where: { sellerId: seller.id }, create: { sellerId: seller.id }, update: {} });
+    return seller;
+  });
+}
 
 export async function requireSellerShell() {
+  if (isLocalPreview()) return { kind: "active" as const, seller: await localPreviewSeller() };
   if (process.env.SELLER_PORTAL_ENABLED !== "true") return { kind: "disabled" as const, seller: null };
   const identity = await auth();
   if (!identity.userId) return { kind: "guest" as const, seller: null };

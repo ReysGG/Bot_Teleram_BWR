@@ -6,6 +6,8 @@ import { SellerStatGrid } from "@/components/seller/seller-primitives";
 const money = (value: bigint | number | null | undefined) => `Rp ${new Intl.NumberFormat("id-ID").format(value ?? 0)}`;
 const date = (value: Date) => new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(value);
 
+export const dynamic = "force-dynamic";
+
 export default async function SellerPage() {
   const access = await requireSellerShell();
   if (access.kind !== "active" || !access.seller) return <section className="seller-panel"><h1>Portal seller</h1><p>{access.kind === "disabled" ? "Portal seller belum diaktifkan di lingkungan ini." : access.kind === "guest" ? "Masuk dengan akun yang menerima undangan seller." : "Akses seller memerlukan undangan dan akun yang aktif."}</p>{access.kind === "guest" ? <Link className="button button-primary" href="/sign-in?redirect_url=%2Fseller">Masuk ke akun seller</Link> : <Link className="button button-quiet" href="/shop">Kembali ke toko</Link>}</section>;

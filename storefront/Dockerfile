@@ -20,6 +20,7 @@ RUN npm run typecheck \
 FROM deps AS migrator
 COPY prisma ./prisma
 COPY prisma.config.ts ./
+COPY scripts ./scripts
 CMD ["npx", "prisma", "migrate", "deploy"]
 
 FROM node:24-bookworm-slim AS runner

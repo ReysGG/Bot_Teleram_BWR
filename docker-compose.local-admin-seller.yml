@@ -112,7 +112,7 @@ services:
       DATABASE_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
       DIRECT_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
     depends_on:
-      storefront-migrate: {condition: service_completed_successfully}
+      storefront-seed: {condition: service_completed_successfully}
     ports: ["127.0.0.1:34110:3000"]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
@@ -133,6 +133,20 @@ services:
       DIRECT_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
     depends_on:
       storefront-db: {condition: service_healthy}
+    restart: "no"
+    networks: [local-backend]
+    logging: *local-logging
+
+  storefront-seed:
+    build:
+      context: storefront
+      target: migrator
+    command: ["node", "scripts/seed-local-preview.mjs"]
+    environment:
+      DATABASE_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
+      DIRECT_URL: postgresql://storefront_local:disposable_local_only@storefront-db:5432/storefront_local
+    depends_on:
+      storefront-migrate: {condition: service_completed_successfully}
     restart: "no"
     networks: [local-backend]
     logging: *local-logging
