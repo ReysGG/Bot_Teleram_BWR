@@ -104,7 +104,7 @@ services:
       context: storefront
       args:
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-        NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: LocalAdminSellerTestBot
+        NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: BWRTeleLocalTestBot
     env_file: [.env.local.storefront]
     environment:
       HOSTNAME: 0.0.0.0
