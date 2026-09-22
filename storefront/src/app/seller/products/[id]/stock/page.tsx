@@ -1,0 +1,19 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { requireSellerPage } from "@/server/seller/access";
+import { prisma } from "@/server/db/prisma";
+
+const statusLabels: Record<string, string> = { AVAILABLE: "Tersedia", RESERVED: "Reserved", DELIVERED: "Terjual", BANNED: "Banned", DISABLED: "Disabled" };
+export default async function SellerProductStockPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ notice?: string; imported?: string; error?: string }> }) {
+  const seller = await requireSellerPage();
+  const { id } = await params;
+  const query = await searchParams;
+  const product = await prisma.product.findFirst({ where: { id, sellerId: seller.id }, select: { id: true, name: true, price: true, status: true, bannedStockPolicy: true, _count: { select: { stockItems: true } } } });
+  if (!product) notFound();
+  const [groups, records] = await Promise.all([
+    prisma.digitalStockItem.groupBy({ by: ["status", "healthStatus"], where: { productId: product.id, archivedAt: null }, _count: { _all: true } }),
+    prisma.digitalStockItem.findMany({ where: { productId: product.id }, orderBy: { createdAt: "desc" }, take: 100, select: { id: true, originalFilename: true, status: true, healthStatus: true, healthHttpStatus: true, archivedAt: true, createdAt: true, lastCheckedAt: true, orderItem: { select: { order: { select: { invoiceNumber: true } } } } } }),
+  ]);
+  const counts = groups.reduce<Record<string, number>>((result, row) => { result[row.status] = (result[row.status] ?? 0) + row._count._all; return result; }, {});
+  return <section className="seller-panel seller-stock-page"><div className="seller-panel-heading"><div><Link className="seller-back-link" href="/seller/products">← Produk saya</Link><p className="seller-eyebrow">GUDANG SELLER</p><h1>{product.name}</h1><p className="seller-muted">Harga Rp {product.price.toLocaleString("id-ID")} · produk {product.status.toLowerCase()} · stok terenkripsi.</p></div><Link className="seller-button" href={`/seller/products/${product.id}/stock/upload`}>Upload stok</Link></div>{query.notice === "stock-uploaded" ? <div className="seller-success" role="status">{query.imported ?? "0"} stok baru diproses. Duplikat dilewati dan health check dijalankan.</div> : null}{query.error ? <div className="seller-warning" role="alert">Upload belum berhasil ({query.error}). Periksa file atau coba lagi.</div> : null}<section className="seller-metrics seller-metrics-four"><div><small>Total file</small><strong>{product._count.stockItems}</strong></div><div><small>Tersedia</small><strong>{counts.AVAILABLE ?? 0}</strong></div><div><small>Reserved</small><strong>{counts.RESERVED ?? 0}</strong></div><div><small>Terjual</small><strong>{counts.DELIVERED ?? 0}</strong></div></section><section className="seller-table-panel"><div className="seller-panel-heading"><div><p className="seller-eyebrow">INVENTORY LEDGER</p><h2>Stok terbaru</h2></div><span className="seller-status">Maksimal 100 baris</span></div>{records.length ? <div className="seller-table-wrap"><table className="seller-table"><thead><tr><th>File</th><th>Status</th><th>Kesehatan</th><th>Invoice</th><th>Upload</th></tr></thead><tbody>{records.map((item) => <tr key={item.id}><td><strong>{item.originalFilename}</strong><small>ID {item.id.slice(-8)}</small></td><td><span className="seller-status">{statusLabels[item.status] ?? item.status}</span></td><td>{item.healthStatus}{item.healthHttpStatus ? ` · HTTP ${item.healthHttpStatus}` : ""}<small>{item.lastCheckedAt ? `Dicek ${item.lastCheckedAt.toLocaleDateString("id-ID")}` : "Belum dicek"}</small></td><td>{item.orderItem?.order.invoiceNumber ?? "—"}</td><td>{item.createdAt.toLocaleDateString("id-ID")}</td></tr>)}</tbody></table></div> : <div className="seller-empty"><strong>Belum ada stok</strong><p>Upload file JSON/TXT atau paste satu credential per baris untuk produk ini.</p></div>}</section></section>;
+}

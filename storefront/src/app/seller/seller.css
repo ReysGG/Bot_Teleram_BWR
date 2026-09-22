@@ -49,6 +49,11 @@
   .seller-withdrawal-form input,.seller-withdrawal-form select { @apply min-h-11 rounded-xl border border-[var(--line)] bg-white px-3 text-[.85rem] text-[var(--navy)] outline-none; }
   .seller-withdrawal-form input:focus,.seller-withdrawal-form select:focus { @apply border-[var(--blue)] ring-2 ring-[#dce9ff]; }
   .seller-success { @apply rounded-[10px] border border-[#bce8d2] bg-[var(--mint)] p-3 text-[.8rem] text-[var(--green)]; }
+  .seller-back-link { @apply mb-3 inline-flex items-center text-[.8rem] font-extrabold text-[var(--blue)] no-underline; }
+  .seller-stock-page .seller-panel-heading { @apply items-start; }
+  .seller-upload-card { @apply mt-6 rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-5; }
+  .seller-upload-card .stock-upload-form { @apply grid gap-4; }
+  .seller-upload-card .stock-upload-form .button-light { @apply border-0 bg-[var(--blue)] text-white; }
 }
 @media (max-width: 760px) {
   .seller-main { @apply w-[calc(100%-32px)] pt-4; }

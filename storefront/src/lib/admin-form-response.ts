@@ -9,8 +9,9 @@ export function isAdminFormResponse(value: unknown, allowedPrefixes = ["/admin"]
   if (!value || typeof value !== "object" || !("ok" in value)) return false;
   const response = value as Record<string, unknown>;
   if (response.ok === true) {
-    return typeof response.redirectTo === "string"
-      && allowedPrefixes.some((prefix) => response.redirectTo.startsWith(prefix));
+    const redirectTo = response.redirectTo;
+    return typeof redirectTo === "string"
+      && allowedPrefixes.some((prefix) => redirectTo.startsWith(prefix));
   }
   return response.ok === false
     && typeof response.error === "string"
