@@ -10,5 +10,5 @@ export const dynamic = "force-dynamic";
 
 export default async function SellerLayout({ children }: { children: ReactNode }) {
   const state = await requireSellerShell();
-  return <LocalPreviewProvider><SiteHeader active="account" /><main className="seller-main"><nav className="seller-subnav" aria-label="Navigasi seller"><Link href="/seller">Ringkasan</Link>{state.kind === "active" ? <><Link href="/seller/products">Produk saya</Link><Link href="/seller/sales">Penjualan</Link><Link href="/seller/balance">Saldo</Link><Link href="/seller/withdrawals">Penarikan</Link></> : null}</nav>{children}</main><SiteFooter /></LocalPreviewProvider>;
+  return <LocalPreviewProvider><SiteHeader active="account" /><main className="seller-main"><nav className="seller-subnav" aria-label="Navigasi seller"><Link href="/seller">Ringkasan</Link>{state.kind === "active" ? <><Link href="/seller/products">Produk saya</Link><Link href="/seller/sales">Penjualan</Link><Link href="/seller/balance">Saldo</Link><Link href="/seller/withdrawals">Penarikan</Link><Link href="/seller/payout-accounts">Akun payout</Link></> : null}</nav>{children}</main><SiteFooter /></LocalPreviewProvider>;
 }

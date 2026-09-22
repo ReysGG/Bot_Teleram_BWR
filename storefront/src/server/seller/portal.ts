@@ -43,6 +43,10 @@ export async function getSellerSales(sellerId: string) {
   });
 }
 
+export async function getSellerSale(sellerId: string, saleId: string) {
+  return prisma.sellerSale.findFirst({ where: { id: saleId, sellerId }, select: { id: true, gross: true, commission: true, net: true, status: true, holdSeconds: true, eligibleAt: true, createdAt: true, orderItem: { select: { productNameSnapshot: true, variantLabelSnapshot: true, quantity: true, unitPrice: true, order: { select: { invoiceNumber: true, status: true, paymentStatus: true, createdAt: true, paidAt: true } } } } } });
+}
+
 export async function getSellerBalance(sellerId: string) {
   const [wallet, journals] = await Promise.all([
     prisma.sellerWallet.findUnique({ where: { sellerId }, select: { pending: true, available: true, held: true, debt: true, updatedAt: true } }),
@@ -56,6 +60,10 @@ export async function getSellerWithdrawals(sellerId: string) {
     where: { sellerId }, orderBy: { createdAt: "desc" }, take: 100,
     select: { id: true, amount: true, status: true, version: true, operator: true, reference: true, reason: true, paidAt: true, createdAt: true, updatedAt: true, account: { select: { bank: true, holder: true, masked: true, status: true } } },
   });
+}
+
+export async function getSellerWithdrawal(sellerId: string, withdrawalId: string) {
+  return prisma.sellerWithdrawal.findFirst({ where: { id: withdrawalId, sellerId }, select: { id: true, amount: true, status: true, version: true, operator: true, reference: true, reason: true, paidAt: true, createdAt: true, updatedAt: true, account: { select: { bank: true, holder: true, masked: true, status: true } } } });
 }
 
 export async function getSellerPayoutAccounts(sellerId: string) {
