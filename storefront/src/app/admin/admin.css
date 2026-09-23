@@ -1646,3 +1646,26 @@ td small { display: block; color: var(--muted); margin-top: 4px; }
 .admin-content{min-width:0;padding:0 max(24px,calc((100vw - 1360px)/2)) 64px}.admin-management-bar{min-height:70px;margin:0 0 26px;padding:0 4px}.admin-page-header{margin-bottom:24px}.admin-page-header h1{font-size:clamp(2rem,4vw,3.5rem);color:var(--navy)}.admin-page-header .eyebrow{color:var(--blue)}.admin-description{color:var(--muted)}
 .admin-content .panel{border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:22px}.admin-content .metric-grid{gap:14px}.admin-content .metric-card{border:1px solid var(--line);border-radius:16px;box-shadow:none}.admin-content .table-wrap{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:auto}.admin-content table{background:#fff}.admin-content th{background:var(--surface);color:var(--navy-soft)}.admin-content td{border-color:var(--line)}
 @media(max-width:900px){.admin-layout{display:block}.admin-sidebar{position:sticky;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:12px}.sidebar-brand{padding:5px 8px 10px}.sidebar-nav{display:flex;overflow:auto;padding-top:10px}.sidebar-link{flex:0 0 auto}.sidebar-footer{display:none}.admin-content{padding:0 16px 48px}.admin-management-bar{min-height:58px}.admin-content .table-wrap{border:0;background:transparent}.admin-content table{min-width:720px}}
+
+/* Final storefront theme overrides. The legacy admin rules above are kept for
+   component structure, but this block owns the visible management shell. */
+.admin-surface .admin-sidebar { background: #fff !important; color: var(--navy) !important; border-right: 1px solid var(--line) !important; }
+.admin-surface .sidebar-brand { color: var(--navy) !important; border-color: var(--line) !important; }
+.admin-surface .sidebar-brand strong { font-family: "Bahnschrift", "Aptos", sans-serif !important; letter-spacing: -.02em; }
+.admin-surface .sidebar-brand small { color: var(--muted) !important; }
+.admin-surface .sidebar-mark { background: linear-gradient(135deg, var(--blue), #54b0ff) !important; border: 0 !important; font-family: inherit !important; }
+.admin-surface .sidebar-link { color: var(--navy-soft) !important; border: 0 !important; border-radius: 12px !important; }
+.admin-surface .sidebar-link:hover,.admin-surface .sidebar-link.is-active { background: var(--sky) !important; color: var(--blue) !important; }
+.admin-surface .sidebar-link.is-active b { background: var(--blue) !important; }
+.admin-surface .sidebar-footer > span { color: var(--muted) !important; }
+.admin-surface .admin-content h1,.admin-surface .admin-content h2,.admin-surface .admin-content h3,.admin-surface .topbar h1 { font-family: "Aptos Display", "Bahnschrift", sans-serif !important; letter-spacing: -.04em !important; }
+.admin-surface .admin-content h1,.admin-surface .topbar h1 { font-size: clamp(2rem, 4vw, 3.5rem) !important; line-height: 1.04 !important; }
+.admin-surface .admin-content h2 { font-size: 1.35rem !important; line-height: 1.2 !important; }
+.admin-surface .admin-content .panel { border: 1px solid var(--line) !important; border-radius: 18px !important; background: #fff !important; box-shadow: var(--shadow) !important; }
+.admin-surface .admin-content input,.admin-surface .admin-content select,.admin-surface .admin-content textarea { border: 1px solid var(--line) !important; border-radius: 12px !important; background: #fff !important; color: var(--navy) !important; }
+.admin-surface .admin-content input:focus,.admin-surface .admin-content select:focus,.admin-surface .admin-content textarea:focus { border-color: var(--blue) !important; box-shadow: 0 0 0 3px rgba(23,105,255,.14) !important; outline: 0 !important; }
+.admin-surface .button { border-radius: 12px !important; border: 1px solid transparent !important; box-shadow: none !important; transition: transform .18s ease, box-shadow .18s ease !important; }
+.admin-surface .button:hover { transform: translateY(-1px) !important; box-shadow: 0 8px 22px rgba(23,105,255,.16) !important; }
+.admin-surface .button-primary { background: linear-gradient(135deg,var(--blue),#3188ff) !important; color: #fff !important; }
+.admin-surface .button-quiet,.admin-surface .button-light { border-color: var(--line) !important; background: #fff !important; color: var(--navy) !important; }
+.admin-surface .admin-page-header { padding-top: 12px !important; }
